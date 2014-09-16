@@ -3,11 +3,21 @@ package Modelo;
 public class Vertice {
 
 	protected final String descricao;
+	protected boolean temLaco; //TRUE se o vertice tem laco
 
 	public Vertice(String descricao){
 		this.descricao = descricao;
+		this.temLaco = false;
 	}
-
+	
+	public boolean temLaco(){
+		return this.temLaco;
+	}
+	
+	public void setLaco(boolean value){
+		this.temLaco = value;
+	}
+	
 	public String toString(){
 		return this.descricao;
 	}

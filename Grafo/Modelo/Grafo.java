@@ -83,6 +83,9 @@ public class Grafo {
 
 		vertices.get(v1).put(v2, rotulo);
 		vertices.get(v2).put(v1, rotulo);
+		
+		if(v1.equals(v2)) //caso v1 e v2 sejam iguais, estamos adicionando um laco a v1.
+			v1.setLaco(true);
 	}
 
 	/**
@@ -131,6 +134,9 @@ public class Grafo {
 
 		vertices.get(v1).remove(v2);
 		vertices.get(v2).remove(v1);
+		
+		if(v1.equals(v2)) //caso v1 e v2 sejam iguais, estamos removendo um laco a v1.
+			v1.setLaco(false);
 	}
 
 	/**
@@ -169,7 +175,8 @@ public class Grafo {
 		if(v == null)
 			throw new Exception("Vertice v passado eh nulo.");
 		
-		return vertices.get(v).size();
+		int g = vertices.get(v).size(); 
+		return v.temLaco() ? g+1 : g; //caso v tenha laco, ele conta como 2 no grau dele.
 	}
 
 	/**
@@ -266,7 +273,7 @@ public class Grafo {
 	public boolean isArvore() throws Exception {
 		//ta certo?
 		int nArestas = vertices.values().size() / 2;
-		return isConexo() && nArestas == Math.ceil(vertices.size()-1);
+		return isConexo() && nArestas == Math.ceil(vertices.size()-1); //precaucao para caso de lacos
 	}
 
 	/**

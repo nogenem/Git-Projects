@@ -19,7 +19,7 @@ public class Main {
 			G.conecta(v1, v2, null);
 			G.conecta(v1, v3, null);
 			G.conecta(v2, v3, null);
-			//G.conecta(v2, v4, null);
+			G.conecta(v1, v1, null);
 			//G.conecta(v3, v4, null);
 			//G.conecta(v4, v5, null);
 			//G.conecta(v3, v6, null);
@@ -28,6 +28,7 @@ public class Main {
 			
 			//G.removeVertice(v2);
 			//G.desconecta(v1, v2);
+			System.out.println("Grau de v1: " +G.grau(v1));
 			
 			System.out.println(G);
 		}catch(Exception e){
