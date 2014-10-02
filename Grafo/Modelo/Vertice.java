@@ -1,7 +1,7 @@
 package Modelo;
 
 public class Vertice {
-
+	
 	protected final String descricao;
 	protected boolean temLaco; //TRUE se o vertice tem laco
 
@@ -22,12 +22,29 @@ public class Vertice {
 		return this.descricao;
 	}
 
-	public boolean equals(Object obj){
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result
+				+ ((descricao == null) ? 0 : descricao.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
 		if (obj == null)
 			return false;
-		if (this.getClass() != obj.getClass())
+		if (getClass() != obj.getClass())
 			return false;
-
-		return this.descricao.equals(obj.toString());
+		Vertice other = (Vertice) obj;
+		if (descricao == null) {
+			if (other.descricao != null)
+				return false;
+		} else if (!descricao.equals(other.descricao))
+			return false;
+		return true;
 	}
 }

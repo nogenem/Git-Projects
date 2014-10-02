@@ -34,10 +34,9 @@ public class Grafo {
 	public Vertice adicionaVertice(String descricao) throws Exception {
 		Vertice v1 = new Vertice(descricao);
 
-		for(Vertice v : vertices.keySet())
-			if(v.equals(v1))
-				throw new Exception("Vertice ja existe.");
-
+		if(vertices.containsKey(v1))
+			throw new Exception("Vertice ja existe.");
+		
 		vertices.put(v1, new HashMap<Vertice, Label>());
 		return v1;
 	}
@@ -47,10 +46,13 @@ public class Grafo {
      *
      * @param v 			eh o vertice a ser removido.
      * @throws Exception 	se o vertice passado eh nulo.
+     * @throws Exception	se o vertice não pertence ao grafo.
      */
 	public void removeVertice(Vertice v) throws Exception {
 		if(v == null)
 			throw new Exception("Vertice passado eh nulo.");
+		if(!vertices.containsKey(v))
+			throw new Exception("Vertice não faz parte desse grafo.");
 
 		removeLigacoes(v);
 		vertices.remove(v);
@@ -78,7 +80,7 @@ public class Grafo {
 	public void conecta(Vertice v1, Vertice v2, Label rotulo) throws Exception {
 		if(v1 == null || v2 == null)
 			throw new Exception("Vertice v1 ou v2 passados eh nulo.");
-		else if(estaConectado(v1, v2))
+		if(estaConectado(v1, v2))
 			throw new Exception("Vertice v1 ja esta conectado ao vertice v2.");
 
 		vertices.get(v1).put(v2, rotulo);
@@ -129,7 +131,7 @@ public class Grafo {
 	public void desconecta(Vertice v1, Vertice v2) throws Exception {
 		if(v1 == null || v2 == null)
 			throw new Exception("Vertice v1 ou v2 passados eh nulo.");
-		else if(!estaConectado(v1, v2))
+		if(!estaConectado(v1, v2))
 			throw new Exception("Vertice v1 nao esta conectado ao vertice v2.");
 
 		vertices.get(v1).remove(v2);
@@ -187,6 +189,9 @@ public class Grafo {
 	 * @return				TRUE caso o grafo seja regular.
 	 */
 	public boolean isRegular() throws Exception {
+		if(vertices.isEmpty())
+			return false; //ta certo?
+		
 		int g = -1;
 		for(Vertice v : vertices.keySet()){
 			if(g == -1)
@@ -271,7 +276,9 @@ public class Grafo {
 	 * @return				TRUE caso o grafo seja uma arvore.
 	 */
 	public boolean isArvore() throws Exception {
-		//ta certo?
+		if(vertices.isEmpty())
+			return false;//ta certo?
+		
 		int nArestas = vertices.values().size() / 2;
 		return isConexo() && nArestas == Math.ceil(vertices.size()-1); //precaucao para caso de lacos
 	}

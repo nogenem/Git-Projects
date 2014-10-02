@@ -12,7 +12,7 @@ public class Main {
 			Vertice v1 = G.adicionaVertice("1");
 			Vertice v2 = G.adicionaVertice("2");
 			Vertice v3 = G.adicionaVertice("3");
-			//Vertice v4 = G.adicionaVertice("4");
+			Vertice v4 = G.adicionaVertice("1");
 			//Vertice v5 = G.adicionaVertice("5");
 			//Vertice v6 = G.adicionaVertice("6");
 			
