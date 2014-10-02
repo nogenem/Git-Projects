@@ -65,7 +65,8 @@ public class Grafo {
 	 */
 	private void removeLigacoes(Vertice v){
 		for(Vertice adj : vertices.get(v).keySet())
-			vertices.get(adj).remove(v);
+			if(!adj.equals(v)) //protecao para o temLaco
+				vertices.get(adj).remove(v);
 	}
 
 	/**

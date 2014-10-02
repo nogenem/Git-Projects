@@ -9,10 +9,10 @@ public class Main {
 		try{
 			Grafo G = new Grafo();
 			
-			Vertice v1 = G.adicionaVertice("1");
+			Vertice v1 = G.adicionaVertice("caro");
 			Vertice v2 = G.adicionaVertice("2");
 			Vertice v3 = G.adicionaVertice("3");
-			Vertice v4 = G.adicionaVertice("1");
+			Vertice v4 = G.adicionaVertice("raco");
 			//Vertice v5 = G.adicionaVertice("5");
 			//Vertice v6 = G.adicionaVertice("6");
 			
@@ -26,9 +26,9 @@ public class Main {
 			
 			System.out.println(G);
 			
-			//G.removeVertice(v2);
+			G.removeVertice(v1);
 			//G.desconecta(v1, v2);
-			System.out.println("Grau de v1: " +G.grau(v1));
+			//System.out.println("Grau de v1: " +G.grau(v1));
 			
 			System.out.println(G);
 		}catch(Exception e){
