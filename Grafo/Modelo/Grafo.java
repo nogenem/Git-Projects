@@ -22,23 +22,30 @@ public class Grafo {
 	public Set<Vertice> vertices() {
 		return new HashSet<>(vertices.keySet());
 	}
+	
+	/**
+	 * Devolve um hashmap contendo todos os vertices do grafo e suas ligacoes.
+	 * 
+	 * @return		os vertices do grafo com suas ligacoes.
+	 */
+	public HashMap<Vertice, HashMap<Vertice, Label>> ligacoes(){
+		return new HashMap<>(vertices);
+	}
 
 	/**
      * Adiciona um vertice desconexo, caso nao tenha nenhum outro vertice com a
      * mesma descricao.
      *
-     * @param descricao 	eh a descricao do vertice que sera criado.
+     * @param v				vertice que sera adicionado ao grafo.
      * @throws Exception 	se ja existe um vertice com a mesma descricao.
      * @return 				o novo vertice adicionado no grafo.
      */
-	public Vertice adicionaVertice(String descricao) throws Exception {
-		Vertice v1 = new Vertice(descricao);
-
-		if(vertices.containsKey(v1))
+	public Vertice adicionaVertice(Vertice v) throws Exception {
+		if(vertices.containsKey(v))
 			throw new Exception("Vertice ja existe.");
 		
-		vertices.put(v1, new HashMap<Vertice, Label>());
-		return v1;
+		vertices.put(v, new HashMap<Vertice, Label>());
+		return v;
 	}
 
 	/**
@@ -301,9 +308,11 @@ public class Grafo {
 		for(Vertice v : vertices.keySet())
 			for(Vertice vi : vertices.get(v).keySet())
 					grafo += "("+ v +", "+ vi +"), ";
-
+		
+		if(!grafo.endsWith("{"))//edicao pro grafo do git
 			grafo = grafo.substring(0, grafo.length()-2);
-			grafo += "}";
+		
+		grafo += "}";
 		return grafo;
 	}
 
