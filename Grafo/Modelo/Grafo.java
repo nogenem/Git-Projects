@@ -309,7 +309,7 @@ public class Grafo {
 			for(Vertice vi : vertices.get(v).keySet())
 					grafo += "("+ v +", "+ vi +"), ";
 		
-		if(!grafo.endsWith("{"))//edicao pro grafo do git
+		if(!grafo.endsWith("{"))
 			grafo = grafo.substring(0, grafo.length()-2);
 		
 		grafo += "}";

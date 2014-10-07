@@ -1,9 +1,12 @@
 package Programa;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
+import java.util.List;
+import java.util.Queue;
 import java.util.Set;
 
 import Modelo.Label;
@@ -13,8 +16,8 @@ public class Dijkstra {
 	private HashMap<Vertice, HashMap<Vertice, Label>> ligacoes;
 	private HashMap<Vertice, Integer> valorAtual; //valor atual dos vertices durante a busca
 	private Set<Vertice> taFechado; //vertices que estao 'fechados' na busca
-	private HashMap<Vertice, Set<Vertice>> vsAtualiza; //vertices utilizados para 
-											   	      //atualizar o valor do custo
+	private HashMap<Vertice, Queue<Vertice>> vsAtualiza; //vertices utilizados para 
+											   	         //atualizar o valor do custo
 	
 	public Dijkstra(HashMap<Vertice, HashMap<Vertice, Label>> ligacoes){
 		this.ligacoes = ligacoes;
@@ -41,11 +44,11 @@ public class Dijkstra {
 		
 		Vertice fechado = null;
 		Set<Vertice> adjacentes = null;
-		int base, tmp = 0;
+		int base = 0, tmp = 0;
 		
 		for(Vertice v : ligacoes.keySet()){ //inicia os valores
 			valorAtual.put(v, v.equals(source) ? 0 : Integer.MAX_VALUE);
-			vsAtualiza.put(v, new HashSet<Vertice>());
+			vsAtualiza.put(v, new LinkedList<Vertice>());
 		}
 		
 		//enquanto taFechado nao tiver todos os vertices do grafo...
@@ -92,27 +95,38 @@ public class Dijkstra {
 	}
 	
 	/**
-	 * Apos a busca do caminho, retorna uma lista com o caminho
-	 * minimo da source ate o destino.
+	 * Apos a busca do caminho, retorna uma lista com os caminhos
+	 * de custo minimo da source ate o destino.
 	 * 
-	 * @param source		vertice inicial da busca.
 	 * @param dest			vertice de destino da busca.
-	 * @return				lista com o UM dos caminhos minimos entre
-	 * 						source e dest.
+	 * @return				lista com os caminhos minimos entre
+	 * 						o vertice source usado na busca e o vertice dest.
 	 */
-	public LinkedList<Vertice> findMinimalDistanceTo(Vertice source, Vertice dest){
-		LinkedList<Vertice> result = new LinkedList<>();
-		Vertice tmp = dest;
-		
-		result.add(dest);
-		while(!tmp.equals(source)){
-			tmp = vsAtualiza.get(tmp).iterator().next();
+	public List<Queue<Vertice>> findMinimalDistanceTo(Vertice dest){
+		List<Queue<Vertice>> list = new ArrayList<>();
+		Queue<Vertice> result = new LinkedList<>();
+		Vertice tmp;
+		boolean morePaths; //variavel auxiliar que diz se ha mais 
+						   //caminhos minimos entre source utilizado 
+						   //na busca e dest
+					
+		do{
+			morePaths = false;
+			tmp = dest;
 			result.add(tmp);
-		}
+			while(vsAtualiza.get(tmp).size() != 0){
+				if(vsAtualiza.get(tmp).size() > 1){
+					tmp = vsAtualiza.get(tmp).poll();
+					morePaths = true;
+				}else
+					tmp = vsAtualiza.get(tmp).element();
+				result.add(tmp);
+			}
+			Collections.reverse((LinkedList<Vertice>) result);
+			list.add(result);
+			result = new LinkedList<>();
+		}while(morePaths);
 		
-		Collections.reverse(result);
-		
-		//soh retorna um dos caminhos minimos...
-		return result;
+		return list;
 	}
 }

@@ -1,25 +1,32 @@
 package Programa;
 
+import java.util.List;
+import java.util.Queue;
+
 import Modelo.Grafo;
 import Modelo.Label;
 import Modelo.Vertice;
 
 public class Main {
 	
-	public final int limit = 3; //limite de missionarios e canibais
-	public Grafo G;
-	public Dijkstra d;
+	private final int limit = 3; //limite de missionarios e canibais
+	private Grafo G;
+	private Dijkstra d;
 	
 	public static void main(String[] args) {
+		Vertice Inicial = new Vertice(0,0,3,3,"dir"); //vertice inicial do problema
+		Vertice Final = new Vertice(3,3,0,0,"esq"); //vertice final do problema
 		try{
 			Main m = new Main();
-			Vertice Inicial = new Vertice(0,0,3,3,"dir"); //vertice inicial do problema
-			Vertice Final = new Vertice(3,3,0,0,"esq"); //vertice final do problema
 			
-			System.out.println(m.G);			
+			System.out.println("Grafo:");
+			System.out.println(m.getGrafo()+ "\n");			
 			
-			m.d.executeCode(Inicial);		
-			System.out.println(m.d.findMinimalDistanceTo(Inicial, Final));
+			m.buscaSolucao(Inicial);		
+			
+			String sol = m.getSolucao(Final).toString();
+			System.out.println("Solucao:");
+			System.out.println(sol.replace("],", "],\n"));
 			
 		}catch(Exception e){
 			System.out.println(e.getMessage());
@@ -31,6 +38,10 @@ public class Main {
 		adicionaVertices();
 		adicionaArestas();
 		this.d = new Dijkstra(G.ligacoes());
+	}
+	
+	public Grafo getGrafo(){
+		return G;
 	}
 	
 	/**
@@ -65,5 +76,28 @@ public class Main {
 				}	
 			}
 		}
+	}
+	
+	/**
+	 * Busca a solucao para o problema dos canibais e missionarios
+	 * executando o algoritmo de busca de caminho de custo minimo
+	 * de Dijkstra.
+	 * 
+	 * @param source		vertice inicial da busca.
+	 */
+	public void buscaSolucao(Vertice source){
+		this.d.executeCode(source);
+	}
+	
+	/**
+	 * Retorna os caminhos de custo minimo partindo do
+	 * vertice source usado na busca ate o vertice dest.
+	 * 
+	 * @param dest			vertice final do caminho.
+	 * @return				lista com os caminhos de custo minimo
+	 * 						entre source usado na busca e dest.
+	 */
+	public List<Queue<Vertice>> getSolucao(Vertice dest){
+		return this.d.findMinimalDistanceTo(dest);
 	}
 }
