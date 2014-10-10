@@ -42,7 +42,7 @@ public class Grafo {
      */
 	public Vertice adicionaVertice(Vertice v) throws Exception {
 		if(vertices.containsKey(v))
-			throw new Exception("Vertice ja existe.");
+			throw new Exception("Vertice v ja existe.");
 		
 		vertices.put(v, new HashMap<Vertice, Label>());
 		return v;
@@ -57,9 +57,9 @@ public class Grafo {
      */
 	public void removeVertice(Vertice v) throws Exception {
 		if(v == null)
-			throw new Exception("Vertice passado eh nulo.");
+			throw new Exception("Vertice v passado eh nulo.");
 		if(!vertices.containsKey(v))
-			throw new Exception("Vertice não faz parte desse grafo.");
+			throw new Exception("Vertice v não faz parte desse grafo.");
 
 		removeLigacoes(v);
 		vertices.remove(v);
@@ -110,7 +110,7 @@ public class Grafo {
 		if(v1 == null || v2 == null)
 			throw new Exception("Vertice v1 ou v2 passados eh nulo.");
 		
-		return adjacentes(v1).contains(v2);
+		return vertices.get(v1).keySet().contains(v2);
 	}
 
 	/**
@@ -145,7 +145,7 @@ public class Grafo {
 		vertices.get(v1).remove(v2);
 		vertices.get(v2).remove(v1);
 		
-		if(v1.equals(v2)) //caso v1 e v2 sejam iguais, estamos removendo um laco a v1.
+		if(v1.equals(v2)) //caso v1 e v2 sejam iguais, estamos removendo o laco de v1.
 			v1.setLaco(false);
 	}
 
@@ -198,7 +198,7 @@ public class Grafo {
 	 */
 	public boolean isRegular() throws Exception {
 		if(vertices.isEmpty())
-			return false; //ta certo?
+			return false; 
 		
 		int g = -1;
 		for(Vertice v : vertices.keySet()){
@@ -219,7 +219,7 @@ public class Grafo {
 	 */
 	public boolean isCompleto() throws Exception {
 		if(vertices.isEmpty())
-			return false; //ta certo?
+			return false;
 
 		int g = ordem()-1;
 		for(Vertice v : vertices.keySet())
@@ -232,14 +232,14 @@ public class Grafo {
 	/**
 	 * Calcula o fecho transitivo a partir de um vertice.
 	 *
-	 * @param v				vertice inicial da procura.
+	 * @param v				vertice inicial da busca.
 	 * @throws Exception	se o vertice passado seja nulo.
 	 * @return				um conjunto contendo o fecho transitivo apartir
 	 * 						de um vertice dado.
 	 */
 	public Set<Vertice> fechoTransitivo(Vertice v) throws Exception {
 		if(v == null)
-			throw new Exception("Vertice passado eh nulo.");
+			throw new Exception("Vertice v passado eh nulo.");
 		
 		Set<Vertice> visitados = new HashSet<Vertice>();
 		fechoTransitivo(v, visitados);
@@ -250,10 +250,8 @@ public class Grafo {
 	/**
 	 * Calcula o fecho transitivo a partir de um vertice.
 	 *
-	 * @param v				vertice inicial da procura.
+	 * @param v				vertice inicial da busca.
 	 * @param visitados		conjunto com os vertices que ja foram visitados.
-	 * @return				um conjunto contendo o fecho transitivo apartir
-	 * 						de um vertice dado.
 	 */
 	private void fechoTransitivo(Vertice v, Set<Vertice> visitados){
 		visitados.add(v);
@@ -271,7 +269,7 @@ public class Grafo {
 	 */
 	public boolean isConexo() throws Exception {
 		if(vertices.isEmpty())
-			return false; //ta certo?
+			return false; 
 
 		return fechoTransitivo(umVertice()).size() == vertices.size();
 	}
@@ -285,7 +283,7 @@ public class Grafo {
 	 */
 	public boolean isArvore() throws Exception {
 		if(vertices.isEmpty())
-			return false;//ta certo?
+			return false;
 		
 		int nArestas = vertices.values().size() / 2;
 		return isConexo() && nArestas == Math.ceil(vertices.size()-1); //precaucao para caso de lacos

@@ -64,7 +64,7 @@ public class Dijkstra {
 					if(tmp == valorAtual.get(v))
 						vsAtualiza.get(v).add(fechado);
 					else if(tmp < valorAtual.get(v)){
-						valorAtual.put(v, tmp);
+						valorAtual.put(v, tmp); //sobreescreve o valor atual
 						vsAtualiza.get(v).clear(); //remove os valores desatualizados
 						vsAtualiza.get(v).add(fechado);
 					}
@@ -99,11 +99,16 @@ public class Dijkstra {
 	 * de custo minimo da source ate o destino.
 	 * 
 	 * @param dest			vertice de destino da busca.
+	 * @exception			caso o codigo de busca ainda nao tenha sido executado.
 	 * @return				lista com os caminhos minimos entre
 	 * 						o vertice source usado na busca e o vertice dest.
 	 */
-	public List<Queue<Vertice>> findMinimalDistanceTo(Vertice dest){
+	public List<Queue<Vertice>> findMinimalDistanceTo(Vertice dest) throws Exception {
 		List<Queue<Vertice>> list = new ArrayList<>();
+		
+		if(vsAtualiza == null || vsAtualiza.isEmpty())
+			throw new Exception("Execute o codigo de busca antes.");
+		
 		Queue<Vertice> result = new LinkedList<>();
 		Vertice tmp;
 		boolean morePaths; //variavel auxiliar que diz se ha mais 

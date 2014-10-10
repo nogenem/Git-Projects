@@ -15,7 +15,7 @@ public class Main {
 	
 	public static void main(String[] args) {
 		Vertice Inicial = new Vertice(0,0,3,3,"dir"); //vertice inicial do problema
-		Vertice Final = new Vertice(3,3,0,0,"esq"); //vertice final do problema
+		Vertice Final = new Vertice(3,3,0,0,"esq");   //vertice final do problema
 		try{
 			Main m = new Main();
 			
@@ -94,10 +94,11 @@ public class Main {
 	 * vertice source usado na busca ate o vertice dest.
 	 * 
 	 * @param dest			vertice final do caminho.
+	 * @exception			caso o codigo de busca ainda nao tenha sido executado.
 	 * @return				lista com os caminhos de custo minimo
 	 * 						entre source usado na busca e dest.
 	 */
-	public List<Queue<Vertice>> getSolucao(Vertice dest){
+	public List<Queue<Vertice>> getSolucao(Vertice dest) throws Exception {
 		return this.d.findMinimalDistanceTo(dest);
 	}
 }
