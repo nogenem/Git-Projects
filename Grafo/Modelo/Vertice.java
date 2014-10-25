@@ -1,10 +1,9 @@
 package Modelo;
 
 public class Vertice {
-	
+
 	public final int Ce, Me, Cd, Md;
 	public final String b;
-	protected boolean temLaco; //TRUE se o vertice tem laco
 
 	public Vertice(int Ce, int Me, int Cd, int Md, String b){
 		this.Ce = Ce; //canibais no lado esquerdo
@@ -12,15 +11,6 @@ public class Vertice {
 		this.Cd = Cd; //canibais no lado direito
 		this.Md = Md; //missionarios no lado direito
 		this.b = b; //aonde esta o barco, esq ou dir
-		this.temLaco = false; 
-	}
-	
-	public boolean temLaco(){
-		return this.temLaco;
-	}
-	
-	public void setLaco(boolean value){
-		this.temLaco = value;
 	}
 	
 	public String toString(){
@@ -57,6 +47,5 @@ public class Vertice {
 			return false;
 		return true;
 	}
-	
-	
+
 }

@@ -13,18 +13,18 @@ import Modelo.Label;
 import Modelo.Vertice;
 
 public class Dijkstra {
-	private HashMap<Vertice, HashMap<Vertice, Label>> ligacoes;
+	private HashMap<Vertice, HashMap<Vertice, Label>> grafo;
 	private HashMap<Vertice, Integer> valorAtual; //valor atual dos vertices durante a busca
 	private Set<Vertice> taFechado; //vertices que estao 'fechados' na busca
 	private HashMap<Vertice, Queue<Vertice>> vsAtualiza; //vertices utilizados para 
 											   	         //atualizar o valor do custo
 	
-	public Dijkstra(HashMap<Vertice, HashMap<Vertice, Label>> ligacoes){
-		this.ligacoes = ligacoes;
+	public Dijkstra(HashMap<Vertice, HashMap<Vertice, Label>> grafo){
+		this.grafo = grafo;
 	}
 	
-	public void setLigacoes(HashMap<Vertice, HashMap<Vertice, Label>> ligacoes){
-		this.ligacoes = ligacoes;
+	public void setGrafo(HashMap<Vertice, HashMap<Vertice, Label>> grafo){
+		this.grafo = grafo;
 	}
 	
 	public void cleanData(){
@@ -46,21 +46,21 @@ public class Dijkstra {
 		Set<Vertice> adjacentes = null;
 		int base = 0, tmp = 0;
 		
-		for(Vertice v : ligacoes.keySet()){ //inicia os valores
+		for(Vertice v : grafo.keySet()){ //inicializa os valores
 			valorAtual.put(v, v.equals(source) ? 0 : Integer.MAX_VALUE);
 			vsAtualiza.put(v, new LinkedList<Vertice>());
 		}
 		
 		//enquanto taFechado nao tiver todos os vertices do grafo...
-		while(taFechado.size() < ligacoes.keySet().size()){
+		while(taFechado.size() < grafo.keySet().size()){
 			fechado = getMenorValorAtual(); //pega o menor valor atual
 			taFechado.add(fechado); //fecha o vertice com o menor valor atual
 			base = valorAtual.get(fechado); //o valor dele vai ser usado como base do calculo
-			adjacentes = ligacoes.get(fechado).keySet();
+			adjacentes = grafo.get(fechado).keySet();
 			
 			for(Vertice v : adjacentes){
 				if(!v.equals(fechado)){
-					tmp = base + ligacoes.get(fechado).get(v).getDist();
+					tmp = base + grafo.get(fechado).get(v).getDist();
 					if(tmp == valorAtual.get(v))
 						vsAtualiza.get(v).add(fechado);
 					else if(tmp < valorAtual.get(v)){
@@ -81,7 +81,7 @@ public class Dijkstra {
 	 * @return		vertice com o menor 'valorAtual' e que
 	 * 				nao esteja fechado ainda.
 	 */
-	public Vertice getMenorValorAtual(){
+	private Vertice getMenorValorAtual(){
 		Vertice min = null;
 		for(Vertice v : valorAtual.keySet()){ 
 			if(!taFechado.contains(v)){
@@ -99,7 +99,7 @@ public class Dijkstra {
 	 * de custo minimo da source ate o destino.
 	 * 
 	 * @param dest			vertice de destino da busca.
-	 * @exception			caso o codigo de busca ainda nao tenha sido executado.
+	 * @throws Exception	caso o codigo de busca ainda nao tenha sido executado.
 	 * @return				lista com os caminhos minimos entre
 	 * 						o vertice source usado na busca e o vertice dest.
 	 */

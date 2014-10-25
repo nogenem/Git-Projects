@@ -2,8 +2,6 @@ package Modelo;
 
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.Queue;
 import java.util.Set;
 
 public class Grafo {
@@ -24,11 +22,11 @@ public class Grafo {
 	}
 	
 	/**
-	 * Devolve um hashmap contendo todos os vertices do grafo e suas ligacoes.
+	 * Devolve o grafo, vertices e suas ligacoes.
 	 * 
 	 * @return		os vertices do grafo com suas ligacoes.
 	 */
-	public HashMap<Vertice, HashMap<Vertice, Label>> ligacoes(){
+	public HashMap<Vertice, HashMap<Vertice, Label>> getGrafo(){
 		return new HashMap<>(vertices);
 	}
 
@@ -51,15 +49,15 @@ public class Grafo {
 	/**
      * Remove o vertice v do Grafo.
      *
-     * @param v 			eh o vertice a ser removido.
+     * @param v 			vertice a ser removido.
      * @throws Exception 	se o vertice passado eh nulo.
-     * @throws Exception	se o vertice não pertence ao grafo.
+     * @throws Exception	se o vertice v não pertencer ao grafo.
      */
 	public void removeVertice(Vertice v) throws Exception {
 		if(v == null)
 			throw new Exception("Vertice v passado eh nulo.");
 		if(!vertices.containsKey(v))
-			throw new Exception("Vertice v não faz parte desse grafo.");
+			throw new Exception("Vertice v não pertence ao grafo.");
 
 		removeLigacoes(v);
 		vertices.remove(v);
@@ -68,12 +66,11 @@ public class Grafo {
 	/**
 	 * Remove todas as ligacoes que o vertice v tem.
 	 *
-	 * @param v 	eh o vertice para o qual serao removidas as ligacoes.
+	 * @param v 	vertice para o qual serao removidas as ligacoes.
 	 */
 	private void removeLigacoes(Vertice v){
 		for(Vertice adj : vertices.get(v).keySet())
-			if(!adj.equals(v)) //protecao para o temLaco
-				vertices.get(adj).remove(v);
+			vertices.get(adj).remove(v);
 	}
 
 	/**
@@ -82,20 +79,21 @@ public class Grafo {
      * @param v1 			primeiro vertice a ser conectado.
      * @param v2 			segundo vertice a ser conectado.
      * @param rotulo  		rotulo da ligacao.
-     * @throws Exception	se o vertice v1 ou v2 for nulo
-     * @throws Exception	se o vertice v1 ja esta conectado ao vertice v2
+     * @throws Exception	se o vertice v1 ou v2 for nulo.
+     * @throws Exception	{@link #estaConectado(v1,v2)} lança exceptions.
+     * @throws Exception	se o vertice v1 ja esta conectado ao vertice v2.
+     * @throws Exception	se v1 for igual a v2.
      */
 	public void conecta(Vertice v1, Vertice v2, Label rotulo) throws Exception {
 		if(v1 == null || v2 == null)
 			throw new Exception("Vertice v1 ou v2 passados eh nulo.");
 		if(estaConectado(v1, v2))
 			throw new Exception("Vertice v1 ja esta conectado ao vertice v2.");
+		if(v1.equals(v2))
+			throw new Exception("Este grafo nao aceita lacos.");
 
 		vertices.get(v1).put(v2, rotulo);
 		vertices.get(v2).put(v1, rotulo);
-		
-		if(v1.equals(v2)) //caso v1 e v2 sejam iguais, estamos adicionando um laco a v1.
-			v1.setLaco(true);
 	}
 
 	/**
@@ -103,12 +101,15 @@ public class Grafo {
 	 *
 	 * @param v1			primeiro vertice para checagem.
 	 * @param v2			segundo vertice para checagem.
-	 * @throws Exception	se o vertice v1 ou v2 for nulo
+	 * @throws Exception	se o vertice v1 ou v2 for nulo.
+	 * @throws Exception	se v1 ou v2 nao pertencer ao grafo.
 	 * @return 				TRUE caso v1 esteja conectado a v2.
 	 */
 	public boolean estaConectado(Vertice v1, Vertice v2) throws Exception {
 		if(v1 == null || v2 == null)
 			throw new Exception("Vertice v1 ou v2 passados eh nulo.");
+		if(!vertices.containsKey(v1) || !vertices.containsKey(v2))
+			throw new Exception("Vertice v1 ou v2 não pertence ao grafo.");
 		
 		return vertices.get(v1).keySet().contains(v2);
 	}
@@ -117,13 +118,16 @@ public class Grafo {
 	 * Retorna os vertices adjacentes ao vertice v.
 	 *
 	 * @param v				vertice que desejasse pegar os adjacentes.
-	 * @throws Exception	se o vertice v for nulo
+	 * @throws Exception	se o vertice v for nulo.
+	 * @throws Exception	se o vertice v nao fizer parte deste grafo.
 	 * @return				um conjunto contendo os vertices adjacentes
 	 * 						ao vertice v.
 	 */
 	public Set<Vertice> adjacentes(Vertice v) throws Exception {
 		if(v == null)
 			throw new Exception("Vertice v passado eh nulo.");
+		if(!vertices.containsKey(v))
+			throw new Exception("Vertice v não faz parte deste grafo.");
 		
 		return new HashSet<>(vertices.get(v).keySet());
 	}
@@ -134,6 +138,7 @@ public class Grafo {
 	 * @param v1			primeiro vertice da ligacao a ser desconectado.
 	 * @param v2			segundo vertice da ligacao a ser desconectado.
 	 * @throws Exception	se o vertice v1 ou v2 for nulo.
+	 * @throws Exception	{@link #estaConectado(v1,v2)} lança exceptions.
 	 * @throws Exception	se o vertice v1 nao esta conectado ao v2.
 	 */
 	public void desconecta(Vertice v1, Vertice v2) throws Exception {
@@ -144,9 +149,6 @@ public class Grafo {
 
 		vertices.get(v1).remove(v2);
 		vertices.get(v2).remove(v1);
-		
-		if(v1.equals(v2)) //caso v1 e v2 sejam iguais, estamos removendo o laco de v1.
-			v1.setLaco(false);
 	}
 
 	/**
@@ -177,23 +179,24 @@ public class Grafo {
 	/**
 	 * Devolve a quantidade de ligacoes que o vertice v possui.
 	 *
-	 * @param v				eh o vertice que desejasse saber o seu grau.
-	 * @throws Exception	se o vertice v for nulo
+	 * @param v				vertice que desejasse saber o seu grau.
+	 * @throws Exception	se o vertice v for nulo.
+	 * @throws Exception	se o vertice v nao pertencer ao grafo.
 	 * @return				a quantidade de ligacoes que o vertice v possui.
 	 */
 	public int grau(Vertice v) throws Exception {
 		if(v == null)
 			throw new Exception("Vertice v passado eh nulo.");
-		
-		int g = vertices.get(v).size(); 
-		return v.temLaco() ? g+1 : g; //caso v tenha laco, ele conta como 2 no grau dele.
+		if(!vertices.containsKey(v))
+			throw new Exception("Vertice v nao pertence ao grafo.");
+
+		return vertices.get(v).size(); 
 	}
 
 	/**
 	 * Verifica se o grafo eh regular.
 	 * 
-	 * @throws Exception	grau(v) lanca exception caso o 
-	 * 						vertice v seja nulo.
+	 * @throws Exception	{@link #grau(v)} lanca exceptions.
 	 * @return				TRUE caso o grafo seja regular.
 	 */
 	public boolean isRegular() throws Exception {
@@ -213,8 +216,7 @@ public class Grafo {
 	/**
 	 * Verifica se o grafo eh completo.
 	 * 
-	 * @throws Exception	grau(v) lanca exception caso o 
-	 * 						vertice v seja nulo.
+	 * @throws Exception	{@link #grau(v)} lanca exceptions.
 	 * @return				TRUE caso o grafo seja completo.
 	 */
 	public boolean isCompleto() throws Exception {
@@ -234,12 +236,15 @@ public class Grafo {
 	 *
 	 * @param v				vertice inicial da busca.
 	 * @throws Exception	se o vertice passado seja nulo.
+	 * @throws Exception	se v nao pertencer ao grafo.
 	 * @return				um conjunto contendo o fecho transitivo apartir
 	 * 						de um vertice dado.
 	 */
 	public Set<Vertice> fechoTransitivo(Vertice v) throws Exception {
 		if(v == null)
 			throw new Exception("Vertice v passado eh nulo.");
+		if(!vertices.containsKey(v))
+			throw new Exception("Vertice v não pertence ao grafo.");
 		
 		Set<Vertice> visitados = new HashSet<Vertice>();
 		fechoTransitivo(v, visitados);
@@ -263,8 +268,7 @@ public class Grafo {
 	/**
 	 * Verifica se o grafo eh conexo.
 	 *
-	 * @throws Exception	fechoTransitivo(v) lanca exception caso o vertice
-	 * 						passado seja nulo.
+	 * @throws Exception	{@link #fechoTransitivo(v)} lanca exceptions.
 	 * @return 				TRUE caso o grafo seja conexo.
 	 */
 	public boolean isConexo() throws Exception {
@@ -277,16 +281,29 @@ public class Grafo {
 	/**
 	 * Verifica se o grafo eh uma arvore.
 	 * 
-	 * @throws Exception	fechoTransitivo(v), usado na funcao isConexo(), 
-	 * 						lanca exception caso o vertice passado seja nulo.
+	 * @throws Exception	{@link #fechoTransitivo(v)}, usado na funcao {@link #isConexo()}, 
+	 * 						lanca exceptions.
 	 * @return				TRUE caso o grafo seja uma arvore.
 	 */
 	public boolean isArvore() throws Exception {
 		if(vertices.isEmpty())
 			return false;
 		
-		int nArestas = vertices.values().size() / 2;
-		return isConexo() && nArestas == Math.ceil(vertices.size()-1); //precaucao para caso de lacos
+		int nArestas = sumGraus() / 2;
+		return isConexo() && nArestas == (vertices.size()-1);
+	}
+	
+	/**
+	 * Soma os graus dos vertices do grafo.
+	 * 
+	 * @return		a soma dos graus dos vertices.
+	 */
+	private int sumGraus(){
+		int value = 0;
+		for(Vertice v : vertices.keySet())
+			value += vertices.get(v).size();
+		
+		return value;
 	}
 
 	/**
@@ -305,114 +322,12 @@ public class Grafo {
 
 		for(Vertice v : vertices.keySet())
 			for(Vertice vi : vertices.get(v).keySet())
-					grafo += "("+ v +", "+ vi +"), ";
+					grafo += "["+ v +", "+ vi +"], ";
 		
 		if(!grafo.endsWith("{"))
 			grafo = grafo.substring(0, grafo.length()-2);
 		
 		grafo += "}";
 		return grafo;
-	}
-
-	/* Funcoes extras */
-
-	/**
-	 * Verifica se existe pelo menos um ciclo no grafo.
-	 *
-	 * @throws Exception	adjacentes(v), usado na funcao temCiclos interna,
-	 * 						lanca exception caso o vertice passado seja nulo.
-	 * @return				TRUE caso tenha pelo menos um ciclo no grafo.
-	 */
-	public boolean temCiclo() throws Exception {
-		Set<Vertice> visitados = new HashSet<Vertice>();
-		Set<Vertice> vs = vertices(); 
-		
-		while(!vs.isEmpty()){
-			if(temCiclo(vs.iterator().next(), null, visitados, vs))
-				return true;
-		}
-		
-		return false;
-	}
-
-	/**
-	 * Verifica se existe pelo menos um ciclo no grafo.
-	 *
-	 * @param v				vertice atual.
-	 * @param ant			vertice anterior.
-	 * @param visitados		conjunto dos vertices ja visitados.
-	 * @throws Exception	adjacentes(v) lanca exception caso o vertice 
-	 * 						passado seja nulo.
-	 * @return 				TRUE caso tenha pelo menos um ciclo no grafo.
-	 */
-	private boolean temCiclo(Vertice v, Vertice ant, Set<Vertice> visitados, Set<Vertice> vs) throws Exception {
-		vs.remove(v);
-		if(visitados.contains(v))
-			return true;
-		else
-			visitados.add(v);
-		
-		for(Vertice y : adjacentes(v)){
-			if(!y.equals(ant) && temCiclo(y, v, visitados, vs))
-				return true;
-		}
-		return false;
-	}
-	
-	/**
-	 * Devolve um conjunto contendo todos os componentes conexos
-	 * do grafo.
-	 *  
-	 * @throws Exception		fechoTransitivo(v) lanca exception
-	 * 							caso o vertive v seja nulo.
-	 * @return					um conjunto contendo todos os componentes
-	 * 							conexos do grafo.
-	 */
-	public Set<Set<Vertice>> componentesConexos() throws Exception{
-		Set<Set<Vertice>> comps = new HashSet<>();
-		Set<Vertice> vs = vertices(); 
-		Set<Vertice> tmp;
-		
-		while(!vs.isEmpty()){
-			tmp = fechoTransitivo(vs.iterator().next());
-			vs.removeAll(tmp); 
-			comps.add(tmp);
-		}
-		
-		return comps;
-	}
-	
-	public void visita(Vertice v){
-		System.out.println("Busca achou o vertice: " + v);
-	}
-
-	public void buscaEmLargura(Vertice v) throws Exception {
-		Queue<Vertice> fila = new LinkedList<>();
-		Set<Vertice> visitados = new HashSet<>();
-		Vertice x;
-
-		fila.add(v);
-		while(!fila.isEmpty()){
-			x = fila.poll();
-			visita(x);
-			visitados.add(x);
-			for(Vertice y : adjacentes(x))
-				if(!visitados.contains(y) && !fila.contains(y))
-					fila.add(y);
-		}
-	}
-
-	public void buscaEmProfundidade(Vertice v) throws Exception {
-		buscaEmProfundidade(v, new HashSet<Vertice>());
-	}
-
-	private void buscaEmProfundidade(Vertice v, Set<Vertice> visitados) throws Exception {
-		visita(v);
-		visitados.add(v);
-		for(Vertice y : adjacentes(v))
-			if(!visitados.contains(y))
-				buscaEmProfundidade(y, visitados);
-
-		visitados.remove(v);
 	}
 }

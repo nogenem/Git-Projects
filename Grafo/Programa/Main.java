@@ -9,13 +9,13 @@ import Modelo.Vertice;
 
 public class Main {
 	
-	private final int limit = 3; //limite de missionarios e canibais
+	public static final int LIMIT = 3; //limite de missionarios e canibais
 	private Grafo G;
 	private Dijkstra d;
 	
 	public static void main(String[] args) {
-		Vertice Inicial = new Vertice(0,0,3,3,"dir"); //vertice inicial do problema
-		Vertice Final = new Vertice(3,3,0,0,"esq");   //vertice final do problema
+		Vertice Inicial = new Vertice(0,0,LIMIT,LIMIT,"dir"); //vertice inicial do problema
+		Vertice Final = new Vertice(LIMIT,LIMIT,0,0,"esq");   //vertice final do problema
 		try{
 			Main m = new Main();
 			
@@ -37,7 +37,7 @@ public class Main {
 		this.G = new Grafo();
 		adicionaVertices();
 		adicionaArestas();
-		this.d = new Dijkstra(G.ligacoes());
+		this.d = new Dijkstra(G.getGrafo());
 	}
 	
 	public Grafo getGrafo(){
@@ -51,10 +51,10 @@ public class Main {
 	public void adicionaVertices() throws Exception{
 		String[] margem = {"esq", "dir"};
 		int Cd, Md;
-		for(int Ce=0; Ce<=limit; Ce++)
-			for(int Me=0; Me<=limit; Me++)
+		for(int Ce=0; Ce<=LIMIT; Ce++)
+			for(int Me=0; Me<=LIMIT; Me++)
 				for(int b=0; b<margem.length; b++){
-					Cd = limit-Ce; Md = limit-Me;
+					Cd = LIMIT-Ce; Md = LIMIT-Me;
 					if((Ce <= Me && Cd <= Md) || Md==0 || Me==0)
 						G.adicionaVertice(new Vertice(Ce,Me,Cd,Md,margem[b]));
 				}
@@ -72,7 +72,7 @@ public class Main {
 				if(!v1.b.equals(v2.b) && 1<=tmp && tmp<=2){
 					if(((v2.b.equals("esq") && v2.Ce>=v1.Ce && v2.Me>=v1.Me) || 
 					   (v2.b.equals("dir") && v1.Ce>=v2.Ce && v1.Me>=v2.Me)) && !G.estaConectado(v1, v2))
-						G.conecta(v1, v2, new Label(1));
+							G.conecta(v1, v2, new Label(1));
 				}	
 			}
 		}
@@ -94,7 +94,7 @@ public class Main {
 	 * vertice source usado na busca ate o vertice dest.
 	 * 
 	 * @param dest			vertice final do caminho.
-	 * @exception			caso o codigo de busca ainda nao tenha sido executado.
+	 * @throws Exception	caso o codigo de busca ainda nao tenha sido executado.
 	 * @return				lista com os caminhos de custo minimo
 	 * 						entre source usado na busca e dest.
 	 */
