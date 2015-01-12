@@ -1,0 +1,83 @@
+﻿pais('Brasil').
+pais('Argentina').
+pais('Bolivia').
+pais('Chile').
+pais('Colombia').
+pais('Equador').
+pais('Guiana Francesa').
+pais('Guiana').
+pais('Paraguai').
+pais('Peru').
+pais('Suriname').
+pais('Uruguai').
+pais('Venezuela').
+
+regiao_lingua('America do Sul', 'Portugues').
+regiao_lingua('America do Sul', 'Espanhol').
+regiao_lingua('America do Sul', 'Frances').
+regiao_lingua('America do Sul', 'Ingles').
+regiao_lingua('America do Sul', 'Holandes').
+
+lingua_danca('Portugues', 'Samba').
+lingua_danca('Espanhol', 'Tango').
+lingua_danca('Espanhol', 'Cueca').
+lingua_danca('Espanhol', 'Bambuco').
+lingua_danca('Espanhol', 'Salsa').
+lingua_danca('Espanhol', 'Polca').
+lingua_danca('Espanhol', 'Hyayno').
+lingua_danca('Espanhol', 'Candombe').
+lingua_danca('Espanhol', 'Tango').
+lingua_danca('Ingles', 'Reggae').
+lingua_danca('Ingles', 'Zouk').
+lingua_danca('Holandes', 'Zouk').
+lingua_danca('Frances', 'Zouk').
+
+danca_pais('Samba', 'Brasil').
+danca_pais('Tango', 'Argentina').
+danca_pais('Cueca', 'Chile').
+danca_pais('Bambuco', 'Colombia').
+danca_pais('Cumbia', 'Colombia').
+danca_pais('Salsa', 'Venezuela').
+danca_pais('Zouk', 'Guiana').
+danca_pais('Reggae', 'Guiana').
+danca_pais('Polca', 'Paraguai').
+danca_pais('Huayno', 'Peru').
+danca_pais('Cueca', 'Bolivia').
+danca_pais('Candombe', 'Uruguai').
+danca_pais('Bambuco', 'Equador').
+danca_pais('Zouk', 'Guiana Francesa').
+danca_pais('Zouk', 'Suriname').
+
+perg('Seu pais pertence a America do Sul?', 'America do Sul').
+
+perg('A lingua falada no seu pais eh o Portugues?', 'Portugues').
+perg('A lingua falada no seu pais eh o Espanhol?', 'Espanhol').
+perg('A lingua falada no seu pais eh o Ingles?', 'Ingles').
+perg('A lingua falada no seu pais eh o Frances?', 'Frances').
+perg('A lingua falada no seu pais eh o Holandes?', 'Holandes').
+
+perg('Uma danca tipica do seu pais eh o Samba?', 'Samba').
+perg('Uma danca tipica do seu pais eh o Tango?', 'Tango').
+perg('Uma danca tipica do seu pais eh a Cueca?', 'Cueca').
+perg('Uma danca tipica do seu pais eh o Bambuco?', 'Bambuco').
+perg('Uma danca tipica do seu pais eh a Cumbia?', 'Cumbia').
+perg('Uma danca tipica do seu pais eh a Salsa?', 'Salsa').
+perg('Uma danca tipica do seu pais eh o Zouk?', 'Zouk').
+perg('Uma danca tipica do seu pais eh o Reggae?', 'Reggae').
+perg('Uma danca tipica do seu pais eh a Polca?', 'Polca').
+perg('Uma danca tipica do seu pais eh o Huayno?', 'Huayno').
+perg('Uma danca tipica do seu pais eh o Candombe?', 'Candombe').
+
+perg('O pais que voce estava pensando eh o Brasil?', 'Brasil').
+perg('O pais que voce estava pensando eh a Argentina?', 'Argentina').
+perg('O pais que voce estava pensando eh a Bolivia?', 'Bolivia').
+perg('O pais que voce estava pensando eh o Chile?', 'Chile').
+perg('O pais que voce estava pensando eh a Colombia?', 'Colombia').
+perg('O pais que voce estava pensando eh o Equador?', 'Equador').
+perg('O pais que voce estava pensando eh a Guiana Francesa?', 'Guiana Francesa').
+perg('O pais que voce estava pensando eh a Guiana?', 'Guiana').
+perg('O pais que voce estava pensando eh o Paraguai?', 'Paraguai').
+perg('O pais que voce estava pensando eh o Peru?', 'Peru').
+perg('O pais que voce estava pensando eh o Suriname?', 'Suriname').
+perg('O pais que voce estava pensando eh o Uruguai?', 'Uruguai').
+perg('O pais que voce estava pensando eh a Venezuela?', 'Venezuela').
