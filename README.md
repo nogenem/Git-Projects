@@ -1,2 +1,2 @@
-# Git-Projects
+# Java-Projects
 Meus projetos Java.
