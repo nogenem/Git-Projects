@@ -20,10 +20,13 @@ public class RegExpressionCtrl {
 		Automaton af = DeSimone.createAutomaton(regEx.getRegEx());
 		af.setTitulo(regEx.getTitulo());
 		af.setExtras("AF");
+		af.sortAlphabet();
 		return af;
 	}
 	
 	private static String formatRegExpression(String regEx){
+		regEx = regEx.replaceAll("\\s*", "");
+
 		if(isValidRegExpression(regEx)){
 			regEx = replaceComplexOperators(regEx); 
 			regEx = explicitConcats(regEx);
@@ -32,10 +35,9 @@ public class RegExpressionCtrl {
 			return null;
 	}
 	
-	public static boolean isValidRegExpression(String regEx){
+	private static boolean isValidRegExpression(String regEx){
 		int parenthesisCount = 0;
-		regEx = regEx.replaceAll("\\s*", "");
-		
+	
 		if(regEx.contains("()"))
 			return false;
 		
@@ -68,7 +70,6 @@ public class RegExpressionCtrl {
 	
 	private static String explicitConcats(String regEx){
 		String tmp = "";
-		regEx = regEx.replaceAll("\\s*", "");
 		
 		for(int i = 0; i<regEx.length(); i++){
 			char c = regEx.charAt(i);
@@ -88,12 +89,10 @@ public class RegExpressionCtrl {
 	}
 	
 	private static String replaceComplexOperators(String regEx){
-		regEx = regEx.replaceAll("\\s*", "");
-		
 		//regEx = regEx.replaceAll("(\\w)\\?", "\\($1|&\\)");//retira operador '?'
 		//regEx = regEx.replaceAll("(\\([a-z0-9.+|*]+\\))\\?", "\\($1|&\\)");//retira operador '?'
 		regEx = regEx.replaceAll("(\\w)\\+", "$1$1\\*");//retira operador '+'
-		regEx = regEx.replaceAll("(\\([a-z0-9.|*]+\\))\\+", "$1$1\\*");//retira operador '+'
+		regEx = regEx.replaceAll("(\\([a-z0-9\\.\\|\\*\\?]+\\))\\+", "$1$1\\*");//retira operador '+'
 		return regEx;
 	}
 	

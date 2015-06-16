@@ -13,6 +13,11 @@ public class RegGrammar extends Regular {
 
 	private String grammar; //representacao em String da gramatica
 
+	public RegGrammar(String titulo) {
+		this(new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), 
+				null, titulo, "");
+	}
+	
 	public RegGrammar(String titulo, String grammar) {
 		this(new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), 
 				null, titulo, grammar);
@@ -98,6 +103,10 @@ public class RegGrammar extends Regular {
 	/* Grammar */
 	public String getGrammar() {
 		return grammar;
+	}
+	
+	public void setGrammar(String grammar){
+		this.grammar = grammar;
 	}
 	
 	/* Regular */

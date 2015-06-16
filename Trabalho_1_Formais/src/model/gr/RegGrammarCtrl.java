@@ -1,6 +1,7 @@
 package model.gr;
 
-import java.util.Arrays;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import model.af.Automaton;
 import model.af.State;
@@ -16,15 +17,21 @@ public abstract class RegGrammarCtrl {
 		if(!isValidRegGrammar(grammar))
 			return null;
 		
-		grammar = grammar.replaceAll("[ \t]*", "");
+		grammar = grammar.replaceAll("\\s*", "");
 		//String newLine = System.getProperty("line.separator");
 		
-		RegGrammar G = new RegGrammar(titulo, grammar);
+		RegGrammar G = new RegGrammar(titulo);
+		Pattern p = Pattern.compile("([A-Z][0-9]?->(([a-z0-9][A-Z]?(?!->)|[a-z0-9&])(\\|)?)+)");
+		Matcher matcher = p.matcher(grammar);
 		
+		grammar = "";
+		
+		String linha, vn, tmpVt, tmpVn;
 		String[] split;
-		String vn;
-		String tmpVt, tmpVn;
-		for(String linha : grammar.split("\n")) {
+		while(matcher.find()){
+			linha = matcher.group();
+			grammar += linha+"\n";
+			
 			split = linha.split("->");
 			vn = split[0]; 
 			G.addVn(vn);
@@ -45,13 +52,14 @@ public abstract class RegGrammarCtrl {
 				}
 			}
 		}
-
+		G.setGrammar(grammar);
+		
 		return G;
 	}
 	
 	public static boolean isValidRegGrammar(String grammar){
 		grammar = grammar.replaceAll("\\s*", "");
-		return grammar.matches("([A-Z][0-9]?->(([a-z0-9][A-Z]?|[a-z0-9&])(\\|)?)+(\n)?)+");
+		return grammar.matches("([A-Z][0-9]?->(([a-z0-9][A-Z]?(?!->)|[a-z0-9&])(\\|)?)+)+");
 	}
 	
 	public static Automaton createAutomaton(RegGrammar grammar){

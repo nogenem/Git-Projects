@@ -97,11 +97,11 @@ public class RightContent extends JPanel {
 		
 		DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
 		
-		//TableCellRenderer centerRenderer = new TableTextAreaRender();
-		
 		afTable = new JTable(new Table((Automaton) regular));
 		afTable.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);//AUTO_RESIZE_OFF
 		afTable.setTableHeader(null);
+		afTable.setRowSelectionAllowed(false);
+		//afTable.setFillsViewportHeight(true);
 		centerRenderer.setHorizontalAlignment( SwingConstants.CENTER );
 		afTable.setDefaultRenderer(String.class, centerRenderer);
 		

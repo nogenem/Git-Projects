@@ -2,6 +2,8 @@ package model.af.de_simone;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Set;
 
 import model.af.Automaton;
 import model.af.State;
@@ -114,9 +116,11 @@ public abstract class DeSimone {
 	private static ArrayList<Node> getComposition(CompositeState sTmp, Tree tree) {
 		
 		ArrayList<Node> result = new ArrayList<>();
+		ArrayList<NodeTraversed> traversed;
 		for(Node n : sTmp.getComposition()){
+			traversed  = new ArrayList<>();
 			if(n.getC() != '$')
-				searchTree(n, !RegExpressionCtrl.isOperator(n.getC(),false), result, tree);
+				searchTree(n, !RegExpressionCtrl.isOperator(n.getC(),false), result, traversed, tree);
 		}
 		
 		return result;
@@ -132,60 +136,70 @@ public abstract class DeSimone {
 	 * 					TRUE => subindo na arvore,
 	 * 					FALSE => descendo na arvore.
 	 * @param result	Nodos folhas achados pela exploração.
+	 * @param traversed 
 	 * @param tree		Arvore base.
 	 */
-	private static void searchTree(Node n, boolean dir, ArrayList<Node> result, Tree tree) {
+	private static void searchTree(Node n, boolean dir, ArrayList<Node> result, 
+			ArrayList<NodeTraversed> traversed, Tree tree) {
 		
-		if(n == null)
+		if(n == null || result.contains(n))
 			return;
+		
+		// Verificação se o nodo ja foi percorrido nessa direção.
+		NodeTraversed nt = new NodeTraversed(n, dir);
+		if(traversed.contains(nt))
+			return;
+		else
+			traversed.add(nt);
 		
 		if(!dir){//descida
 			switch (n.getC()) {
 				case '.':
-					searchTree(n.getFilhoEsq(), false, result, tree);
+					searchTree(n.getFilhoEsq(), false, result, traversed, tree);
 					break;
 				case '|':
-					searchTree(n.getFilhoEsq(), false, result, tree); 
-					searchTree(n.getFilhoDir(), false, result, tree);
+					searchTree(n.getFilhoEsq(), false, result, traversed, tree); 
+					searchTree(n.getFilhoDir(), false, result, traversed, tree);
 					break;
 				case '*':
-					searchTree(n.getFilhoEsq(), false, result, tree);
-					searchTree(n.getCostura(), true, result, tree); 
+					searchTree(n.getFilhoEsq(), false, result, traversed, tree);
+					searchTree(n.getCostura(), true, result, traversed, tree); 
 					break;
 				case '?':
-					searchTree(n.getFilhoEsq(), false, result, tree);
-					searchTree(n.getCostura(), true, result, tree); 
+					searchTree(n.getFilhoEsq(), false, result, traversed, tree);
+					searchTree(n.getCostura(), true, result, traversed, tree); 
 					break;
 				default: //folha
 					if(!result.contains(n))
 						result.add(n);
 					break;
 			}
-		}else{//subindo
+		}else{//subida
 			switch (n.getC()) {
 			case '.':
-				searchTree(n.getFilhoDir(), false, result, tree);
+				searchTree(n.getFilhoDir(), false, result, traversed, tree);
 				break;
 			case '|':
 				while(n.getFilhoDir() != null){
 					n = n.getFilhoDir();
 				}
-				searchTree(n.getCostura(), true, result, tree);
+				searchTree(n.getCostura(), true, result, traversed, tree);
 				break;
 			case '*':
-				searchTree(n.getFilhoEsq(), false, result, tree);
-				searchTree(n.getCostura(), true, result, tree);
+				searchTree(n.getFilhoEsq(), false, result, traversed, tree);
+				searchTree(n.getCostura(), true, result, traversed, tree);
 				break;
 			case '?':
-				searchTree(n.getCostura(), true, result, tree); 
+				searchTree(n.getCostura(), true, result, traversed, tree); 
 				break;
 			default://folha
 				if(n.getC() == '$')
 					result.add(n);
-				else
-					searchTree(n.getCostura(), true, result, tree);
+				else 
+					searchTree(n.getCostura(), true, result, traversed, tree);
 				break;
 			}
 		}
-	}
+	} 
+	
 }

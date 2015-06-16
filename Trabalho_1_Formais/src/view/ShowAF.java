@@ -43,7 +43,9 @@ public class ShowAF extends JDialog {
 		this.setType(Type.UTILITY);
 		this.setResizable(false);
 		this.setTitle("Automato");
-		this.setSize(333, 339);
+		
+		this.setSize(386, 376);
+		
 		this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		
 		this.getContentPane().setLayout(new BorderLayout(0, 0));
