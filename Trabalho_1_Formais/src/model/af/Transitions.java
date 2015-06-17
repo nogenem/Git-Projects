@@ -77,6 +77,16 @@ public class Transitions {
 				transitions.get(s2).get(c).remove(s);
 	}
 	
+	/**
+	 * Troca as transições que levam ao estado sOld 
+	 * para irem para o estado sNew. Função utilizada
+	 * pelo algoritmo De Simone.
+	 * 
+	 * @param sOld		Estado antigo que se quer eliminar as 
+	 * 					transições que levam a ele.
+	 * @param sNew		Estado novo que se quer que as transições
+	 * 					cheguem nele.
+	 */
 	public void swapNextStatesTransition(State sOld, State sNew){
 		for(State key : transitions.keySet()){
 			for(char c : transitions.get(key).keySet()){

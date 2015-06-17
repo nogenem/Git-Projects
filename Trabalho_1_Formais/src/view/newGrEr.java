@@ -135,7 +135,7 @@ public class newGrEr extends JDialog implements ActionListener {
 					e.getMessage(), "Aviso", JOptionPane.WARNING_MESSAGE);
 		} catch (Exception e) {
 			JOptionPane.showMessageDialog(this, 
-					"Algum erro inesperado aconteceu.\n"+e.getMessage(), 
+					"Algum erro inesperado aconteceu.", 
 					"Erro", JOptionPane.WARNING_MESSAGE);
 			e.printStackTrace();
 		}

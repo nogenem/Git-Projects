@@ -2,9 +2,13 @@ package model.af.de_simone;
 
 public class Node {
 	private Node pai, filhoEsq, filhoDir, costura;
+	// 'label' do nodo
 	private char c;
+	// numero usado nas folhas
 	private int numero;
+	// codigo utilizado para diferenciar os nodos 
 	private int innerCode;
+	// ja existe uma costura que leva a este nodo?
 	private boolean isCosturado;
 	private static int code;
 	

@@ -64,12 +64,6 @@ public class Tree {
 		char cTmp;
 		
 		if(tmp.charAt(0) == '(' && tmp.charAt(regEx.length()-1) == ')'){
-			/*for (int i = 0; i < tmp.length()/2; i++) {
-				if(tmp.charAt(i) == '(' && tmp.charAt(tmp.length()-(i+1)) == ')')
-					tmp = "[" +tmp.substring((i+1), tmp.length()-(i+1))+ "]";
-				else
-					break;
-			}*/
 			if(tmp.charAt(0) == '(' && tmp.charAt(tmp.length()-1) == ')')
 				tmp = "[" +tmp.substring((1), tmp.length()-1)+ "]";
 				

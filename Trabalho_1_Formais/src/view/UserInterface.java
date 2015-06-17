@@ -332,11 +332,17 @@ public class UserInterface {
 	}
 	
 	/**
-	 * Classes extras para controle de eventos
+	 * Classe responsavel por cuidar dos eventos
+	 * gerados pelo menu do programa.
+	 * 
+	 * @author Gilney
+	 *
 	 */
 	public class MenuListener implements ActionListener {
 		
 		private UserInterface ui;
+		// variavel usada para o usuario nao poder 
+		// executar duas operaçoes ao mesmo tempo
 		private boolean isDoingSomething;
 		
 		public MenuListener(UserInterface ui) {
@@ -367,7 +373,7 @@ public class UserInterface {
 				}
 			}else if(!main.haveTwoAFs()){
 				JOptionPane.showMessageDialog(ui.getFrame(), 
-						"Esta opera\u00E7\u00E3o requer 2 GR/ER.");
+						"Esta opera\u00E7\u00E3o requer duas GR/ER.");
 			}
 			
 			try{
@@ -388,11 +394,11 @@ public class UserInterface {
 						main.complement(side);
 						break;
 					case "Busca":
-						//if(main.isRegExpression(side)){
+						if(main.isRegExpression(side)){
 							String txt = JOptionPane.showInputDialog(frame, "Entre com o texto para busca:");
 							new SearchResults(frame, txt, main.search(side, txt));
-						//}else
-							//JOptionPane.showMessageDialog(frame, "Esta opera\u00E7\u00E3o n\u00E3o esta disponivel para GRs.");
+						}else
+							JOptionPane.showMessageDialog(frame, "Esta opera\u00E7\u00E3o n\u00E3o esta disponivel para GRs.");
 						break;
 					case "Intersec\u00E7\u00E3o":
 						main.intersection();
@@ -412,6 +418,14 @@ public class UserInterface {
 		}
 	}
 	
+	/**
+	 * Classe responsavel por cuidar dos eventos
+	 * gerados pelos botoes de Edit, Del e a ComboBox
+	 * dos paineis da interface.
+	 * 
+	 * @author Gilney
+	 *
+	 */
 	public class RightPanelListener implements ActionListener, ItemListener {
 		
 		private UserInterface ui;
@@ -446,11 +460,8 @@ public class UserInterface {
 
 		@Override
 		public void itemStateChanged(ItemEvent e) {
-			if(e.getStateChange() == ItemEvent.DESELECTED){
-				//System.out.println("Previous item: " + e.getItem());
-			}else if(e.getStateChange() == ItemEvent.SELECTED){
+			if(e.getStateChange() == ItemEvent.SELECTED)
 				main.showRightContent(side, e.getItem().toString());
-			}
 		}
 	}
 

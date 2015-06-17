@@ -2,8 +2,6 @@ package model.af.de_simone;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Set;
 
 import model.af.Automaton;
 import model.af.State;
@@ -26,9 +24,8 @@ public abstract class DeSimone {
 		HashMap<CompositeState, ArrayList<Node>> comp = new HashMap<>();//composicao de estados
 		Automaton af = new Automaton();
 		
-		for(Node n : tree.getListLeaves()){
+		for(Node n : tree.getListLeaves())
 			af.addSimbol(n.getC());
-		}
 		
 		State sTmp = new State("Q0");
 			af.setStartingState(sTmp);
