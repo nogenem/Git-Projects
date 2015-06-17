@@ -5,7 +5,7 @@ import java.sql.DriverManager;
 
 public class BdConnection {
 	private static Connection CON;
-	private static final String file = "lib\\DataBase.db";
+	private static final String file = ":resource:DataBase.db"; //"lib\\DataBase.db";
 	
 	public static Connection getConnection(){
 		if(CON == null){
