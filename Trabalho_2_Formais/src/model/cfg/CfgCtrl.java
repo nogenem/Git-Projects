@@ -110,8 +110,10 @@ public abstract class CfgCtrl {
 		boolean empty = true;
 		for(String NT : cfg.getVn()){
 			if(cfg.getFirst().get(NT).contains("&")){
-				if(!isEmptyIntersection(cfg.getFirst().get(NT), cfg.getFollow().get(NT)))
+				if(!isEmptyIntersection(cfg.getFirst().get(NT), cfg.getFollow().get(NT))){
+					cfg.getNonEmptyIntersection().add(NT);
 					empty = false;
+				}
 			}
 		}
 		if(empty)
@@ -121,10 +123,14 @@ public abstract class CfgCtrl {
 			isLL1 = isLL1 && false;
 		}
 		
-		if(isLL1)
+		// Checagem se é LL(1)
+		if(isLL1){
 			result.add("A gramatica é LL(1)!");
-		else
+			cfg.setIsLL1(true);
+		}else{
 			result.add("A gramatica não é LL(1)!");
+			cfg.setIsLL1(false);
+		}
 		
 		return result;
 	}

@@ -21,6 +21,9 @@ public class ContextFreeGrammar {
 	private String titulo;
 	private boolean extras;
 	private String parser;
+	
+	// -1 => não foi checado ainda; 0 => é LL(1); 1 => não é LL(1)
+	private byte checkLL1;
 
 	private HashMap<String, Set<String>> first;
 	private HashMap<String, Set<String>> firstNT;
@@ -59,6 +62,10 @@ public class ContextFreeGrammar {
 		this.recEsq = -1;
 		this.fat = -1;
 		this.emptyIntersection = -1;
+		
+		this.checkLL1 = -1;
+		
+		this.nonEmptyIntersection = new HashSet<>();
 	}
 	
 	/* Vn */
@@ -184,7 +191,7 @@ public class ContextFreeGrammar {
 			
 			tmpStruct = new Struct(p.getSentence().get(0), tmpSet);
 			for(Struct s : tmpFirsts){
-				if(!CfgCtrl.isEmptyIntersection(s.first, tmpStruct.first)){ // s.emptyIntersection(tmpStruct) //
+				if(!CfgCtrl.isEmptyIntersection(s.first, tmpStruct.first)){ 
 					if(s.firstSymbol.equals(tmpStruct.firstSymbol)){
 						if(fat == -1)
 							fat = 1;
@@ -390,6 +397,20 @@ public class ContextFreeGrammar {
 		
 		for(String NT : Vn)
 			follow.get(NT).remove("&");
+	}
+	
+	
+	/* LL1 */
+	public void setIsLL1(boolean v){
+		this.checkLL1 = (byte) (v?0:1);
+	}
+	
+	public boolean isLL1Checked(){
+		return !(checkLL1 == -1);
+	}
+	
+	public boolean isLL1(){
+		return checkLL1 == 0;
 	}
 	
 	/* Parser */

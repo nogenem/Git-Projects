@@ -2,12 +2,15 @@ package controller;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Set;
 
 import javax.swing.JOptionPane;
 
 import model.cfg.CfgCtrl;
 import model.cfg.ContextFreeGrammar;
+import model.cfg.ParsingCtrl;
 import model.exceptions.GrammarException;
+import model.exceptions.ParsingException;
 import model.persistencia.CfgDao;
 import view.RightContent;
 import view.UserInterface;
@@ -24,6 +27,8 @@ public class Main {
 	/*
 	 * To do:
 	 * 		Arrumar problema no First
+	 * 		Salvar verificações e se eh LL(1)?
+	 * 		Alterar InputWindow para quando a função LUA retornar a sequencia
 	 */
 	
 	public static void main(String[] args) {
@@ -40,6 +45,16 @@ public class Main {
 		initList();
 		
 		this.ui.getFrame().setVisible(true);
+	}
+	
+	public boolean hasGrammarOnPanel(){
+		return currentCFG != null;
+	}
+	
+	public boolean isGrammarLL1() throws GrammarException, ParsingException, Exception{
+		if(!currentCFG.isLL1Checked())
+			checkIfIsLL1(true);
+		return currentCFG.isLL1();
 	}
 	
 	private void initHash(){
@@ -130,21 +145,46 @@ public class Main {
 		
 		setRightContent("G.L.C", cfg, true);
 	}
-
-	public void isLL1() throws GrammarException, Exception {
+	
+	public void checkIfIsLL1() throws GrammarException, Exception {
+		checkIfIsLL1(false);
+	}
+	
+	private void checkIfIsLL1(boolean internal) throws GrammarException, Exception {
 		if(currentCFG == null)
+			throw new GrammarException("Escolha uma gramatica primeiro.");
+		if(currentCFG.isLL1Checked()){
+			setRightContent("Verificações", null);
 			return;
+		}
+			
 		
 		ArrayList<String> result = CfgCtrl.checkIfIsLL1(currentCFG);
 		StringBuilder txt = new StringBuilder("Verificações: \n");
+		Set<String> tmp = null;
 		
 		txt.append("    -Recursão a esquerda:\n");
 		txt.append("       -"+result.get(0)+"\n");
+		tmp = currentCFG.getRecSymbols();
+		if(tmp.size() > 0){
+			txt.append("       -Simbolos recursivos:\n");
+			txt.append("          -"+tmp+"\n");
+		}
 		txt.append("    -Fatoração:\n");
 		txt.append("       -"+result.get(1)+"\n");
+		tmp = currentCFG.getNonFatSymbols();
+		if(tmp.size() > 0){
+			txt.append("       -Simbolos não fatorados:\n");
+			txt.append("          -"+tmp+"\n");
+		}
 		txt.append("    -Terceira condição:\n");
 		txt.append("       -"+result.get(2)+"\n");
-		txt.append("\n\nResultado:\n");
+		tmp = currentCFG.getNonEmptyIntersection();
+		if(tmp.size() > 0){
+			txt.append("       -Simbolos com intersecção não vazia:\n");
+			txt.append("          -"+tmp+"\n");
+		}
+		txt.append("\nResultado:\n");
 		txt.append("   -"+result.get(3));
 		
 		// seta first, firstNT e follow
@@ -155,7 +195,33 @@ public class Main {
 		}
 		
 		setRightContent("Verificações", txt.toString());
-		JOptionPane.showMessageDialog(ui.getFrame(), result.get(3));
+		if(!internal)
+			JOptionPane.showMessageDialog(ui.getFrame(), result.get(3));
+	}
+	
+	public void parsing(String input) throws GrammarException, ParsingException, Exception {
+		if(currentCFG == null)
+			throw new GrammarException("Escolha uma gramatica primeiro.");
+		else if(!currentCFG.isLL1Checked())
+			checkIfIsLL1();
+		
+		if(!currentCFG.isLL1())
+			throw new GrammarException("A gramatica não é LL(1)!");
+			
+		input = input.trim();
+		
+		//check input
+		if(input.endsWith("$") && !currentCFG.getVt().contains("$"))
+			throw new ParsingException("Por favor remova o simbolo $ do final da entrada.");
+		
+		// gera parser, se necessario
+		if(currentCFG.getParser() == null){
+			ParsingCtrl.generateParser(currentCFG);
+			setRightContent("Parser", currentCFG.getParser());
+		}else
+			setRightContent("Parser", null);
+		
+		ParsingCtrl.parsing(input, currentCFG);
 	}
 
 }

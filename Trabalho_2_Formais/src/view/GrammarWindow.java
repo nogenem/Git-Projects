@@ -32,7 +32,6 @@ public class GrammarWindow extends JDialog implements ActionListener {
 	 * Create the application.
 	 */
 	public GrammarWindow(JFrame parent, Main main) {
-		setAlwaysOnTop(true);
 		this.main = main;
 		
 		initialize();
@@ -48,6 +47,7 @@ public class GrammarWindow extends JDialog implements ActionListener {
 		setType(Type.UTILITY);
 		setModalityType(ModalityType.APPLICATION_MODAL);
 		setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+		setAlwaysOnTop(true);
 		setSize(368,438);
 		
 		getContentPane().setLayout(new BorderLayout(0, 0));
@@ -111,6 +111,7 @@ public class GrammarWindow extends JDialog implements ActionListener {
 			main.addGrammar(tfTitulo.getText(), taGrammar.getText());
 			dispose();
 		}catch (GrammarException exc){
+			System.err.println("ERRO> "+exc.getMessage());
 			JOptionPane.showMessageDialog(this, 
 					exc.getMessage(), "Erro", JOptionPane.WARNING_MESSAGE);
 		}catch(Exception exc){

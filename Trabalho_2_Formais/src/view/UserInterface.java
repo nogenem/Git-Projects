@@ -31,6 +31,7 @@ import javax.swing.ListSelectionModel;
 import javax.swing.SwingConstants;
 
 import model.exceptions.GrammarException;
+import model.exceptions.ParsingException;
 import controller.Main;
 
 public class UserInterface {
@@ -241,13 +242,24 @@ public class UserInterface {
 						new GrammarWindow(frame, main);
 						break;
 					case "LL(1)":
-						main.isLL1();
+						if(!main.hasGrammarOnPanel())
+							JOptionPane.showMessageDialog(frame, "Escolha uma gramatica primeiro.");
+						else
+							main.checkIfIsLL1();
 						break;
 					case "Iniciar":
+						if(!main.hasGrammarOnPanel())
+							JOptionPane.showMessageDialog(frame, "Escolha uma gramatica primeiro.");
+						else{
+							if(!main.isGrammarLL1())
+								throw new GrammarException("A gramatica não é LL(1)!");
+							else
+								new InputWindow(frame, main);
+						}
 						break;
 				}
-			}catch(GrammarException exc){
-				exc.printStackTrace();
+			}catch(GrammarException | ParsingException exc){
+				System.err.println("ERRO> "+exc.getMessage());
 				JOptionPane.showMessageDialog(frame, exc.getMessage(),
 						"Erro", JOptionPane.WARNING_MESSAGE);
 			}catch(Exception exc){
