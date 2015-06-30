@@ -17,6 +17,7 @@ import javax.swing.JTextPane;
 
 import model.exceptions.GrammarException;
 import model.exceptions.ParsingException;
+import model.exceptions.SucessException;
 import controller.Main;
 
 
@@ -62,7 +63,7 @@ public class InputWindow extends JDialog implements ActionListener {
 		
 		JTextPane txtPane = new JTextPane();
 		txtPane.setEditable(false);
-		txtPane.setText("Por favor lembre-se de separar todos os símbolos terminais e não terminais com um espaço.\r\n"
+		txtPane.setText("Por favor lembre-se de separar todos os símbolos terminais com um espaço.\r\n"
 				+ "Não é preciso por o símbolo de final de palavra na entrada.");
 		topPanel.add(txtPane, BorderLayout.CENTER);
 		//scrollPane.setViewportView(txtPane);
@@ -73,6 +74,7 @@ public class InputWindow extends JDialog implements ActionListener {
 		
 		textField = new JTextField();
 		getContentPane().add(textField, BorderLayout.CENTER);
+		textField.requestFocusInWindow();
 		textField.setColumns(10);
 		
 		JButton btnIniciar = new JButton("Iniciar análise");
@@ -85,16 +87,20 @@ public class InputWindow extends JDialog implements ActionListener {
 	public void actionPerformed(ActionEvent e) {
 		try{
 			main.parsing(textField.getText());
-			JOptionPane.showMessageDialog(this, "Sucesso! Entrada foi reconhecida pela gramatica.");
-			dispose();
 		}catch(GrammarException | ParsingException exc){
 			System.err.println("ERRO> "+exc.getMessage());
 			JOptionPane.showMessageDialog(this, exc.getMessage(),
 					"Erro", JOptionPane.WARNING_MESSAGE);
+		}catch(SucessException exc){
+			System.out.println("Sucess> "+exc.getMessage());
+			JOptionPane.showMessageDialog(this, exc.getMessage(), 
+					"Sucesso!", JOptionPane.INFORMATION_MESSAGE);
 		}catch(Exception exc){
 			exc.printStackTrace();
 			JOptionPane.showMessageDialog(this, "Ocorreu um erro inesperado.",
 					"Erro", JOptionPane.ERROR_MESSAGE);
+		}finally{
+			dispose();
 		}
 	}
 

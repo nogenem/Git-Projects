@@ -30,6 +30,7 @@ import javax.swing.JSplitPane;
 import javax.swing.ListSelectionModel;
 import javax.swing.SwingConstants;
 
+import model.cfg.ContextFreeGrammar;
 import model.exceptions.GrammarException;
 import model.exceptions.ParsingException;
 import controller.Main;
@@ -67,12 +68,12 @@ public class UserInterface {
 		return this.frame;
 	}
 	
-	public void addInTheList(String reg){
-		listModel.addElement(reg);
+	public void addInTheList(String titulo){
+		listModel.addElement(titulo);
 	}
 	
-	public void removeOfTheList(int side, String reg){
-		listModel.removeElement(reg);
+	public void removeOfTheList(String titulo){
+		listModel.removeElement(titulo);
 		setEnabledSubMenu1(false);
 	}
 	
@@ -193,12 +194,12 @@ public class UserInterface {
 		
 		JButton btnEdit = new JButton("Edit");
 		btnEdit.setEnabled(false);
-		btnEdit.addItemListener(rpListener);
+		btnEdit.addActionListener(rpListener);
 		subMenu1.add(btnEdit);
 		
 		JButton btnDel = new JButton("Del");
 		btnDel.setEnabled(false);
-		btnDel.addItemListener(rpListener);
+		btnDel.addActionListener(rpListener);
 		subMenu1.add(btnDel);
 		
 		JPanel subMenu2 = new JPanel();
@@ -292,8 +293,13 @@ public class UserInterface {
 			try{
 				switch(cmd){
 					case "Edit":
+						ContextFreeGrammar cfg = main.getCurrentCFG();
+						new GrammarWindow(frame, main, cfg.getTitulo(), cfg.toString());
 						break;
 					case "Del":
+						int op = JOptionPane.showConfirmDialog(frame, "Voce tem certeza que deseja deletar esta gramatica?");
+						if(op==0)
+							main.deleteGrammar();
 						break;
 				}
 			}catch(Exception exc){

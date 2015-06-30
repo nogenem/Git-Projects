@@ -23,18 +23,26 @@ import controller.Main;
 public class GrammarWindow extends JDialog implements ActionListener {
 
 	private Main main;
+	private boolean isEdit;
 	
 	/* Components */
 	private JTextField tfTitulo;
 	private JTextArea taGrammar;
+	private JLabel lblGrammar;
 	
 	/**
 	 * Create the application.
+	 * @wbp.parser.constructor
 	 */
-	public GrammarWindow(JFrame parent, Main main) {
+	public GrammarWindow(JFrame parent, Main main){
+		this(parent, main, null, null);
+	}
+	
+	public GrammarWindow(JFrame parent, Main main, String titulo, String grammar) {
 		this.main = main;
+		this.isEdit = (titulo != null && grammar != null);
 		
-		initialize();
+		initialize(titulo, grammar);
 		setLocationRelativeTo(parent);
 		setVisible(true);
 	}
@@ -42,7 +50,7 @@ public class GrammarWindow extends JDialog implements ActionListener {
 	/**
 	 * Initialize the contents of the frame.
 	 */
-	private void initialize() {
+	private void initialize(String titulo, String grammar) {
 		setTitle("Adicionar G.L.C");
 		setType(Type.UTILITY);
 		setModalityType(ModalityType.APPLICATION_MODAL);
@@ -85,7 +93,7 @@ public class GrammarWindow extends JDialog implements ActionListener {
 		mainPanel.add(grammarPanel, BorderLayout.CENTER);
 		grammarPanel.setLayout(new BorderLayout(0, 0));
 		
-		JLabel lblGrammar = new JLabel("Entre com a gramatica:");
+		lblGrammar = new JLabel("Entre com a gramatica:");
 		lblGrammar.setFont(new Font("Tahoma", Font.BOLD, 12));
 		grammarPanel.add(lblGrammar, BorderLayout.NORTH);
 		
@@ -98,6 +106,15 @@ public class GrammarWindow extends JDialog implements ActionListener {
 		JButton btnAdicionar = new JButton("Adicionar");
 		btnAdicionar.addActionListener(this);
 		getContentPane().add(btnAdicionar, BorderLayout.SOUTH);
+		
+		if(isEdit){
+			setTitle("Editar G.L.C");
+			taGrammar.setText(grammar);
+			tfTitulo.setText(titulo);
+			tfTitulo.setEnabled(false);
+			btnAdicionar.setText("Salvar");
+			lblGrammar.setText("Edite sua gramatica:");
+		}
 	}
 
 	@Override
@@ -108,7 +125,10 @@ public class GrammarWindow extends JDialog implements ActionListener {
 			JOptionPane.showMessageDialog(this, "Entre com uma gramatica!");
 		
 		try{
-			main.addGrammar(tfTitulo.getText(), taGrammar.getText());
+			if(isEdit)
+				main.editGrammar(tfTitulo.getText(), taGrammar.getText());
+			else
+				main.addGrammar(tfTitulo.getText(), taGrammar.getText());
 			dispose();
 		}catch (GrammarException exc){
 			System.err.println("ERRO> "+exc.getMessage());

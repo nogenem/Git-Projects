@@ -162,6 +162,10 @@ public class ContextFreeGrammar {
 		return first;
 	}
 	
+	public Set<String> getFirst(String NT){
+		return getFirst().get(NT);
+	}
+	
 	private void setFirst(){
 		first = new HashMap<>();
 		nonFatSymbols = new HashSet<>();
@@ -214,7 +218,7 @@ public class ContextFreeGrammar {
 		return result;
 	}
 	
-	private Set<String> getSentenceFirst(List<String> sentence){
+	public Set<String> getSentenceFirst(List<String> sentence){
 		Set<String> result = new HashSet<>();
 		
 		Set<String> tmpSet = null;
@@ -493,17 +497,6 @@ public class ContextFreeGrammar {
 		public Struct(String s, Set<String> f){
 			this.firstSymbol = s;
 			this.first = f;
-		}
-		
-		public boolean emptyIntersection(Struct s){
-			boolean result = true;
-			
-			for(String f : this.first){
-				if(s.first.contains(f))
-					result = false;
-			}
-		
-			return result;
 		}
 	}
 }

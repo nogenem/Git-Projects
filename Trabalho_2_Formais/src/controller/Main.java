@@ -11,6 +11,7 @@ import model.cfg.ContextFreeGrammar;
 import model.cfg.ParsingCtrl;
 import model.exceptions.GrammarException;
 import model.exceptions.ParsingException;
+import model.exceptions.SucessException;
 import model.persistencia.CfgDao;
 import view.RightContent;
 import view.UserInterface;
@@ -28,7 +29,7 @@ public class Main {
 	 * To do:
 	 * 		Arrumar problema no First
 	 * 		Salvar verificações e se eh LL(1)?
-	 * 		Alterar InputWindow para quando a função LUA retornar a sequencia
+	 * 		Edit pega os extras?
 	 */
 	
 	public static void main(String[] args) {
@@ -55,6 +56,10 @@ public class Main {
 		if(!currentCFG.isLL1Checked())
 			checkIfIsLL1(true);
 		return currentCFG.isLL1();
+	}
+	
+	public ContextFreeGrammar getCurrentCFG(){
+		return currentCFG;
 	}
 	
 	private void initHash(){
@@ -100,6 +105,7 @@ public class Main {
 		panels.get("First").setContent(currentCFG.printSet("first"));
 		panels.get("FirstNT").setContent(currentCFG.printSet("firstNT"));
 		panels.get("Follow").setContent(currentCFG.printSet("follow"));
+		panels.get("Parser").setContent(currentCFG.getParser());
 	}
 	
 	private void setRightContent(String key, ContextFreeGrammar cfg,
@@ -144,6 +150,25 @@ public class Main {
 		dao.addGrammar(cfg);
 		
 		setRightContent("G.L.C", cfg, true);
+	}
+	
+	public void editGrammar(String titulo, String grammar) throws GrammarException, Exception {
+		ContextFreeGrammar cfg = CfgCtrl.createGrammar(grammar);
+		cfg.setTitulo(titulo);
+		cfg.setExtras(grammars.get(titulo).hasExtras());
+		
+		grammars.put(titulo, cfg);
+		dao.editGrammar(cfg);
+		
+		setRightContent("G.L.C", cfg, true);
+	}
+	
+	public void deleteGrammar() throws GrammarException, Exception {
+		grammars.remove(currentCFG.getTitulo());
+		ui.removeOfTheList(currentCFG.getTitulo());
+		setRightContent("G.L.C", null, true);
+		dao.removeGrammar(currentCFG);
+		currentCFG = null;
 	}
 	
 	public void checkIfIsLL1() throws GrammarException, Exception {
@@ -193,13 +218,13 @@ public class Main {
 			currentCFG.setExtras(true);
 			dao.setExtras(currentCFG);
 		}
-		
+
 		setRightContent("Verificações", txt.toString());
 		if(!internal)
 			JOptionPane.showMessageDialog(ui.getFrame(), result.get(3));
 	}
 	
-	public void parsing(String input) throws GrammarException, ParsingException, Exception {
+	public void parsing(String input) throws GrammarException, ParsingException, SucessException, Exception {
 		if(currentCFG == null)
 			throw new GrammarException("Escolha uma gramatica primeiro.");
 		else if(!currentCFG.isLL1Checked())
@@ -208,15 +233,20 @@ public class Main {
 		if(!currentCFG.isLL1())
 			throw new GrammarException("A gramatica não é LL(1)!");
 			
-		input = input.trim();
-		
 		//check input
-		if(input.endsWith("$") && !currentCFG.getVt().contains("$"))
+		if(input.matches("(.+)\\$") && !currentCFG.getVt().contains("$"))
 			throw new ParsingException("Por favor remova o simbolo $ do final da entrada.");
+		if(input.contains("Z'"))
+			throw new ParsingException("Por favor remova o simbolo Z' da entrada.");
+		
+		input = input.replaceAll("[\t\r\n]*", "");
+		input = input.trim();
+		input += " Z'"; //simbolo final de palavra
 		
 		// gera parser, se necessario
 		if(currentCFG.getParser() == null){
 			ParsingCtrl.generateParser(currentCFG);
+			dao.setParser(currentCFG);
 			setRightContent("Parser", currentCFG.getParser());
 		}else
 			setRightContent("Parser", null);

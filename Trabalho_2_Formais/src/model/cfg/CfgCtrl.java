@@ -24,6 +24,7 @@ public abstract class CfgCtrl {
 		String[] split;
 		String NT;
 		ArrayList<String> tmpSentence;
+		boolean isToAdd = true;
 		for(String linha : grammar.split("[\r\n]+")){
 			split = linha.split("->");
 			
@@ -38,6 +39,7 @@ public abstract class CfgCtrl {
 			for(String sentence : split[1].split("\\|")){
 				sentence = sentence.trim();
 				
+				isToAdd = true;
 				tmpSentence = new ArrayList<>();
 				for(String s : sentence.split(" ")){
 					if(isTerminalSymbol(s))
@@ -45,10 +47,14 @@ public abstract class CfgCtrl {
 					else if(!isNtSymbol(s))
 						throw new GrammarException("Simbolo invalido encontrado: "+s+
 								"\r\nEsperava-se um simbolo terminal ou não terminal valido.");
+					
+					if(isNtSymbol(s) && !isValidNtSymbol(s, grammar))
+						isToAdd = false;
+					
 					tmpSentence.add(s);
 				}
-				
-				glc.addProduction(NT, tmpSentence);
+				if(isToAdd)
+					glc.addProduction(NT, tmpSentence);
 			}
 		}
 		
