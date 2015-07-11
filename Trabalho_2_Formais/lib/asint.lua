@@ -19,7 +19,7 @@ end
 function sucess()
    local s = "Sucesso! Sentença foi aceita.\r\n"
    s = s.."Parse: "
-   s = s.. table.concat(seq, ", ")
+   s = s.. table.concat(seq, ", ").."\r\n"
 
    error(s)
 end
@@ -29,13 +29,15 @@ function my_erro(y, x, err)
    erro = erro.. table.concat(x," ").."\r\n"
    erro = erro.."Simbolo atual: "
    erro = erro..y.."\r\n"
+   erro = erro.."Parse: "
+   erro = erro.. table.concat(seq, ", ").."\r\n"
    erro = erro.."Erro: "
-   erro = erro..err
+   erro = erro..err.."\r\n"
 
    error(erro)
 end
 
-function parser(funcs, x)
+function asint(funcs, x)
    _G.x = string.split(x, " ")
    _G.seq = {}
    f = loadstring(funcs)

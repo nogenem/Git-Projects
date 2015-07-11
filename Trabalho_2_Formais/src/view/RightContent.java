@@ -9,6 +9,12 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.SwingConstants;
 
+/**
+ * Interface dos paineis do lado direito da UI.
+ * 
+ * @author Gilney
+ *
+ */
 @SuppressWarnings("serial")
 public class RightContent extends JPanel {
 	

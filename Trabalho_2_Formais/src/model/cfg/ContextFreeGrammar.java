@@ -8,19 +8,23 @@ import java.util.Set;
 
 public class ContextFreeGrammar {
 	
-	// conjunto Vn da gramatica
+	// Conjunto Vn da gramatica
 	private ArrayList<String> Vn;
-	// conjunto Vt da gramatica
+	// Conjunto Vt da gramatica
 	private ArrayList<String> Vt;
-	// conjunto de produções da gramatica
+	// Conjunto de produções da gramatica
 	private ArrayList<Production> productions;
-	// simbolo inicial da gramatica
+	// Simbolo inicial da gramatica
 	private String initialSymbol;
 	
-	//titulo da gramatica
+	// Titulo da gramatica
 	private String titulo;
+	// Ja foi calculado o First, FirstNT, Follow e verificações?
 	private boolean extras;
+	// Parser desta gramatica
 	private String parser;
+	// Verificações LL(1) 
+	private String verificacoes;
 	
 	// -1 => não foi checado ainda; 0 => é LL(1); 1 => não é LL(1)
 	private byte checkLL1;
@@ -29,22 +33,22 @@ public class ContextFreeGrammar {
 	private HashMap<String, Set<String>> firstNT;
 	private HashMap<String, Set<String>> follow;
 	
-	// variaveis para saber se a gramatica tem rec a esq, esta fatorada
+	// Variaveis para saber se a gramatica tem rec a esq, esta fatorada
 	// e se a intersecção do first e follow é vazia
 	
 	// -1 => não foi checado ainda; 0 => nao tem rec. esq; 1 => só rec. esq direta; 
 	//  2 => só rec. esq indireta; 3 => ambos direto e indireto;
 	private byte recEsq; 
-	// guarda quais são os NTs recursivos;
+	// Guarda quais são os NTs recursivos;
 	private Set<String> recSymbols;
 	// -1 => não foi checado ainda; 0 => esta fatorada; 1 => só não-determinismo direto; 
 	//  2 => só não-determinismo indireto; 3 => ambos direto e indireto;
 	private byte fat;
-	// guarda quais são os NTs não-fatorados;
+	// Guarda quais são os NTs não-fatorados;
 	private Set<String> nonFatSymbols;
 	// -1 => não foi checado ainda; 0 => intersecções vazias; 1 => intersecções não vazias;
 	private byte emptyIntersection;
-	// guarda quais são os NTs que a intersecção do first e follow não é vazia;
+	// Guarda quais são os NTs que a intersecção do first e follow não é vazia;
 	private Set<String> nonEmptyIntersection;
 
 	public ContextFreeGrammar() {
@@ -119,6 +123,15 @@ public class ContextFreeGrammar {
 			productions.add(p);
 	}
 	
+	/**
+	 * Retorna todas as produções de um simbolo 
+	 * não terminal dado.
+	 * 
+	 * @param nt		Simbolo não terminal que se quer
+	 * 					saber as produções.
+	 * @return			Lista contendo as produções do 
+	 * 					simbolo não terminal dado.
+	 */
 	public ArrayList<Production> getNtProductions(String nt){
 		ArrayList<Production> result = new ArrayList<>();
 		for(Production p : productions){
@@ -163,12 +176,16 @@ public class ContextFreeGrammar {
 	}
 	
 	public Set<String> getFirst(String NT){
+		if(!getFirst().containsKey(NT)){// Provavelmente é um simbolo terminal
+			Set<String> r = new HashSet<>();
+			r.add(NT);
+			return r;
+		}
 		return getFirst().get(NT);
 	}
 	
 	private void setFirst(){
 		first = new HashMap<>();
-		nonFatSymbols = new HashSet<>();
 		boolean modified = true;
 		
 		for(String NT : Vn)
@@ -179,45 +196,27 @@ public class ContextFreeGrammar {
 			for(String NT : Vn)
 				modified = modified | first.get(NT).addAll(getNtFirst(NT));
 		}
-		if(fat == -1)
-			fat = 0;
 	}
-	
-	/* Arrumar problema no Fat... [Aa | ABc] onde A => & */
+
 	private Set<String> getNtFirst(String nt){
 		Set<String> result = new HashSet<>();
-		ArrayList<Struct> tmpFirsts = new ArrayList<>();
-		
+
 		Set<String> tmpSet;
-		Struct tmpStruct;
 		for(Production p : getNtProductions(nt)){
 			tmpSet = getSentenceFirst(p.getSentence());
-			
-			tmpStruct = new Struct(p.getSentence().get(0), tmpSet);
-			for(Struct s : tmpFirsts){
-				if(!CfgCtrl.isEmptyIntersection(s.first, tmpStruct.first)){ 
-					if(s.firstSymbol.equals(tmpStruct.firstSymbol)){
-						if(fat == -1)
-							fat = 1;
-						else if(fat == 2)
-							fat = 3;
-					}else{
-						if(fat == -1)
-							fat = 2;
-						else if(fat == 1)
-							fat = 3;
-					}
-					nonFatSymbols.add(nt);
-				}
-			}
-			tmpFirsts.add(tmpStruct);
-
 			result.addAll(tmpSet);
 		}
 
 		return result;
 	}
 	
+	/**
+	 * Função usada para achar o first de uma sentença de uma produção
+	 * da gramatica.
+	 * 
+	 * @param sentence		Sentença da produção.
+	 * @return				Lista contendo o first da sentença.
+	 */
 	public Set<String> getSentenceFirst(List<String> sentence){
 		Set<String> result = new HashSet<>();
 		
@@ -234,7 +233,7 @@ public class ContextFreeGrammar {
 					tmpSet = null;
 					result.add(tmp);
 				}else{
-					tmpSet = first.get(tmp);
+					tmpSet = getFirst().get(tmp);
 					result.addAll(tmpSet);
 					result.remove("&");
 				}
@@ -260,6 +259,10 @@ public class ContextFreeGrammar {
 		return firstNT;
 	}
 	
+	public Set<String> getFirstNT(String NT){
+		return getFirstNT().get(NT);
+	}
+	
 	private void setFirstNT(){
 		firstNT = new HashMap<>();
 		recSymbols = new HashSet<>();
@@ -273,7 +276,7 @@ public class ContextFreeGrammar {
 			for(String NT : Vn)
 				modified = modified | firstNT.get(NT).addAll(getNtFirstNT(NT));
 		}
-		if(recEsq == -1)
+		if(recEsq == -1)// Nao tem rec a esq
 			recEsq = 0;
 	}
 	
@@ -286,6 +289,14 @@ public class ContextFreeGrammar {
 		return result;
 	}
 	
+	/**
+	 * Função usada para achar o firstNT de uma sentença de uma produção
+	 * da gramatica.
+	 * 
+	 * @param NT			Simbolo não terminal 'cabeça' da produção.
+	 * @param sentence		Sentença da produção.
+	 * @return				Lista contendo o first da sentença.
+	 */
 	private Set<String> getSentenceFirstNT(String NT, ArrayList<String> sentence){
 		Set<String> result = new HashSet<>();
 		
@@ -307,7 +318,7 @@ public class ContextFreeGrammar {
 				hasEpsilon = false;
 			}else{
 				result.add(tmp);
-				tmpSet = firstNT.get(tmp);
+				tmpSet = getFirstNT().get(tmp);
 				result.addAll(tmpSet);
 				if(!tmp.equals(NT) && tmpSet.contains(NT)){
 					if(recEsq == -1)
@@ -340,6 +351,10 @@ public class ContextFreeGrammar {
 		if(follow == null)
 			setFollow();
 		return follow;
+	}
+	
+	public Set<String> getFollow(String NT){
+		return getFollow().get(NT);
 	}
 	
 	private void setFollow(){
@@ -403,14 +418,13 @@ public class ContextFreeGrammar {
 			follow.get(NT).remove("&");
 	}
 	
-	
 	/* LL1 */
 	public void setIsLL1(boolean v){
 		this.checkLL1 = (byte) (v?0:1);
 	}
 	
 	public boolean isLL1Checked(){
-		return !(checkLL1 == -1);
+		return checkLL1 != -1;
 	}
 	
 	public boolean isLL1(){
@@ -424,6 +438,15 @@ public class ContextFreeGrammar {
 	
 	public void setParser(String parser){
 		this.parser = parser;
+	}
+	
+	/* Verificações */
+	public String getVerificacoes(){
+		return verificacoes;
+	}
+	
+	public void setVerificacoes(String v){
+		this.verificacoes = v;
 	}
 	
 	/* Rec Esq */
@@ -454,6 +477,48 @@ public class ContextFreeGrammar {
 	}
 	
 	/* Geral */
+	/**
+	 * Função responsavel por verificar se a gramatica esta fatorada.
+	 * Caso não esteja, ela tambem verifica o tipo de não-determinismo.
+	 */
+	public void checkFat(){
+		nonFatSymbols = new HashSet<>();
+		
+		ArrayList<Production> prods = null;
+		ArrayList<String> tmp1 = null;
+		ArrayList<String> tmp2 = null;		
+		boolean checkFirst = true;
+		for(String NT : getVn()){
+			prods = getNtProductions(NT);
+			for(int i = 0; i<prods.size(); i++){
+				for(int j = i+1; j<prods.size(); j++){
+					tmp1 = prods.get(i).getSentence();
+					tmp2 = prods.get(j).getSentence();
+					
+					if(tmp1.get(0).equals(tmp2.get(0))){ //direto
+						if(fat == -1)
+							fat = 1;
+						else if(fat == 2)
+							fat = 3;
+						nonFatSymbols.add(NT);
+						checkFirst = !(isTerminal(tmp1.get(0)) && isTerminal(tmp2.get(0)));
+					}
+					if(checkFirst && (!CfgCtrl.isEmptyIntersection(getSentenceFirst(tmp1), getSentenceFirst(tmp2)) ||
+							!CfgCtrl.isEmptyIntersection(getSentenceFirstNT(NT, tmp1), getSentenceFirstNT(NT, tmp2)))){ //indireto
+						if(fat == -1)
+							fat = 2;
+						else if(fat == 1)
+							fat = 3;
+						nonFatSymbols.add(NT);
+					}
+				}
+				checkFirst = true;
+			}
+		}
+		if(fat == -1)// Esta fatorada
+			fat = 0;
+	}
+	
 	public String printSet(String key){
 		HashMap<String, Set<String>> tmp = null;
 		key = key.toLowerCase();
@@ -488,15 +553,5 @@ public class ContextFreeGrammar {
 			s += "\n";
 		}
 		return s;
-	}
-	
-	private class Struct {
-		String firstSymbol;
-		Set<String> first;
-		
-		public Struct(String s, Set<String> f){
-			this.firstSymbol = s;
-			this.first = f;
-		}
 	}
 }

@@ -19,6 +19,12 @@ import javax.swing.JTextPane;
 import model.exceptions.GrammarException;
 import controller.Main;
 
+/**
+ * Interface para adicionar e editar gramaticas. 
+ * 
+ * @author Gilney
+ *
+ */
 @SuppressWarnings("serial")
 public class GrammarWindow extends JDialog implements ActionListener {
 
@@ -55,7 +61,7 @@ public class GrammarWindow extends JDialog implements ActionListener {
 		setType(Type.UTILITY);
 		setModalityType(ModalityType.APPLICATION_MODAL);
 		setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-		setAlwaysOnTop(true);
+		//setAlwaysOnTop(true);
 		setSize(368,438);
 		
 		getContentPane().setLayout(new BorderLayout(0, 0));
@@ -70,7 +76,8 @@ public class GrammarWindow extends JDialog implements ActionListener {
 		JTextPane txtExample = new JTextPane();
 		txtExample.setFont(new Font("Tahoma", Font.BOLD, 11));
 		txtExample.setEditable(false);
-		txtExample.setText("Siga o padrão do exemplo abaixo:\r\n      E -> E + T | E - T | T\r\n      T -> T * F | T / F | F\r\n      F -> ( E ) | id");
+		txtExample.setText("Siga o padrão do exemplo abaixo:\r\n      E -> E + T | E - T | T\r\n"
+				+ "      T -> T * F | T / F | F\r\n      F -> ( E ) | id");
 		scrollPane.setViewportView(txtExample);
 		
 		JPanel mainPanel = new JPanel();
@@ -119,11 +126,13 @@ public class GrammarWindow extends JDialog implements ActionListener {
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		if(tfTitulo.getText().equals(""))
+		if(tfTitulo.getText().equals("")){
 			JOptionPane.showMessageDialog(this, "Entre com um titulo!");
-		else if(taGrammar.getText().equals(""))
+			return;
+		}else if(taGrammar.getText().equals("")){
 			JOptionPane.showMessageDialog(this, "Entre com uma gramatica!");
-		
+			return;
+		}
 		try{
 			if(isEdit)
 				main.editGrammar(tfTitulo.getText(), taGrammar.getText());

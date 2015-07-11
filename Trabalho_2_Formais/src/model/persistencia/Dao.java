@@ -75,8 +75,10 @@ public class Dao {
 		this.query( SQL );
 		
 		int contador = 1;
+		String tmp;
 		for( String campo : campos ){
-			this.psmt.setObject( contador, dados.get( campo ) );
+			tmp = dados.get( campo );
+			this.psmt.setObject( contador, tmp.equals("NULL")?null:tmp );
 			contador++;
 		}
 

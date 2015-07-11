@@ -3,10 +3,10 @@ package model.cfg;
 import java.util.ArrayList;
 
 public class Production {
-	//Simbolo Não-Terminal 'cabeça' da produção
+	// Simbolo Não-Terminal 'cabeça' da produção
 	private String NT;
-	//Uma das senteças geradas pelo simbolo NT
-	//em questão
+	// Uma das senteças geradas pelo simbolo NT
+	// em questão. EX: S -> a S a ==> sentence = [a, S, a]
 	private ArrayList<String> sentence;
 	
 	public Production(String NT, ArrayList<String> sentence) {

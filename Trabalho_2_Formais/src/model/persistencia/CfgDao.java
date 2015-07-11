@@ -24,6 +24,7 @@ public class CfgDao extends Dao {
 	public void editGrammar(ContextFreeGrammar cfg) throws Exception {
 		HashMap<String, String> dados = new HashMap<>();
 		dados.put("grammar", cfg.toString());;
+		dados.put("parser", "NULL");
 		
 		HashMap<String, String> where = new HashMap<>();
 		where.put("titulo", cfg.getTitulo());

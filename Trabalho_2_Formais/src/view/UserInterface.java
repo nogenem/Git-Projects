@@ -35,11 +35,17 @@ import model.exceptions.GrammarException;
 import model.exceptions.ParsingException;
 import controller.Main;
 
+@SuppressWarnings({"rawtypes","unchecked"})
 public class UserInterface {
 
 	private JFrame frame;
 	private Main main;
 	
+	// Variavel usada para o usuario não poder 
+	// executar duas operações ao mesmo tempo
+	private boolean isDoingSomething;
+	
+	// Valores da ComboBox do programa
 	private final String[] cbModel = 
 		{"G.L.C", "Verificações", "First", "FirstNT", "Follow", "Parser"};
 	
@@ -57,6 +63,7 @@ public class UserInterface {
 	 */
 	public UserInterface(Main main) {
 		this.main = main;
+		this.isDoingSomething = false;
 		initialize();
 		this.frame.setLocationRelativeTo(null);
 	}
@@ -68,15 +75,32 @@ public class UserInterface {
 		return this.frame;
 	}
 	
+	/**
+	 * Adiciona um titulo na lista do painel esquerdo da UI.
+	 * 
+	 * @param titulo		Titulo de uma GLC do programa.
+	 */
 	public void addInTheList(String titulo){
 		listModel.addElement(titulo);
 	}
 	
+	/**
+	 * Remove um titulo da lista do painel esquerdo da UI.
+	 * 
+	 * @param titulo		Titulo de uma GLC do programa.
+	 */
 	public void removeOfTheList(String titulo){
 		listModel.removeElement(titulo);
 		setEnabledSubMenu1(false);
 	}
 	
+	/**
+	 * Muda o valor da comboBox para a 'key' passada.
+	 * 
+	 * @param key		'Key' para a qual se quer mudar a comboBox.
+	 * @return			TRUE caso a comboBox ainda não esteja na 'key'
+	 * 					passada.
+	 */
 	public boolean setComboBoxSelectedItem(String key){
 		if(comboBox.getSelectedItem().equals(key))
 			return false;
@@ -89,17 +113,33 @@ public class UserInterface {
 		rightPanel.setVisible(true);
 	}
 	
+	/**
+	 * Habilita ou desabilita a comboBox e os botões
+	 * de Edit e Del do painel direito da UI.
+	 * 
+	 * @param enabled		Habilita ou desabilita?
+	 */
 	private void setEnabledSubMenu1(boolean enabled){
 		for(Component c : subMenu1.getComponents())
 			c.setEnabled(enabled);
 	}
 	
+	/**
+	 * Muda o conteudo central do painel direito da UI.
+	 * 
+	 * @param panel			Panel que sera colocado na 
+	 * 						parte central  do painel direito
+	 * 						da UI.
+	 */
 	public void setRightContent(RightContent panel){
-		setEnabledSubMenu1(true);
 		if(rightPanel.getComponentCount() >= 2)
 			rightPanel.remove(1);
 		
-		rightPanel.add(panel, BorderLayout.CENTER);
+		if(panel != null){
+			setEnabledSubMenu1(true);
+			rightPanel.add(panel, BorderLayout.CENTER);
+		}else
+			setEnabledSubMenu1(false);
 		refresh();
 	}
 	
@@ -219,23 +259,18 @@ public class UserInterface {
 	 *
 	 */
 	private class MenuListener implements ActionListener {
-		
-		// variavel usada para o usuario nao poder 
-		// executar duas operações ao mesmo tempo
-		private boolean isDoingSomething;
-		
+
 		public MenuListener() {
-			this.isDoingSomething = false;
 		}
 
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			String cmd = e.getActionCommand();
 			
-			if(this.isDoingSomething)
+			if(isDoingSomething)
 				return;
 			
-			this.isDoingSomething = true;
+			isDoingSomething = true;
 			
 			try{
 				switch(cmd){
@@ -254,8 +289,10 @@ public class UserInterface {
 						else{
 							if(!main.isGrammarLL1())
 								throw new GrammarException("A gramatica não é LL(1)!");
-							else
+							else{
+								main.generateParser();
 								new InputWindow(frame, main);
+							}
 						}
 						break;
 				}
@@ -267,9 +304,9 @@ public class UserInterface {
 				exc.printStackTrace();
 				JOptionPane.showMessageDialog(frame, "Ocorreu um erro inesperado no programa.",
 						"Erro", JOptionPane.ERROR_MESSAGE);
+			}finally{
+				isDoingSomething = false;
 			}
-			
-			this.isDoingSomething = false;
 		}
 	}
 	
@@ -290,6 +327,11 @@ public class UserInterface {
 		public void actionPerformed(ActionEvent e) {
 			String cmd = e.getActionCommand();
 			
+			if(isDoingSomething)
+				return;
+			
+			isDoingSomething = true;
+			
 			try{
 				switch(cmd){
 					case "Edit":
@@ -297,7 +339,7 @@ public class UserInterface {
 						new GrammarWindow(frame, main, cfg.getTitulo(), cfg.toString());
 						break;
 					case "Del":
-						int op = JOptionPane.showConfirmDialog(frame, "Voce tem certeza que deseja deletar esta gramatica?");
+						int op = JOptionPane.showConfirmDialog(frame, "Você tem certeza que deseja deletar esta gramatica?");
 						if(op==0)
 							main.deleteGrammar();
 						break;
@@ -305,6 +347,8 @@ public class UserInterface {
 			}catch(Exception exc){
 				exc.printStackTrace();
 				JOptionPane.showMessageDialog(frame, "Ocorreu um erro inesperado no programa.");
+			}finally{
+				isDoingSomething = false;
 			}
 		}
 		
