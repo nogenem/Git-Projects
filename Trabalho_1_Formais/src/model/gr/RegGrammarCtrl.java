@@ -13,7 +13,7 @@ public abstract class RegGrammarCtrl {
 	public static final String allowedExtraSimbols =
 			"->|";
 	private static final String pattern =
-			"([A-Z][0-9]?->(([a-z0-9]([A-Z][0-9]?)?(?!->)|[a-z0-9&])(\\|)?)+)";
+			"([A-Z][0-9]?->(([a-z0-9]([A-Z][0-9]?)|[a-z0-9&])(\\|))*([a-z0-9]([A-Z][0-9]?)(?![0-9]?->)|[a-z0-9&]))";
 	
 	public static RegGrammar createRegGrammar(String titulo, String grammar){
 		grammar = grammar.replaceAll("\\s*", "");

@@ -31,6 +31,18 @@ public class Main {
 	// classe para interação com banco de dados
 	private RegularDao dao;
 	
+	/*
+	 * Coisas que deveria ter feito:
+	 * 		-Poder ver e utilizar os AFs intermediarios, como uniao, diferença, complemento...
+	 * 			-No meu soh da pra fazer isso com a intersecção...
+	 * 		-Tirar o alwaysOnTop das janelas
+	 * 		-Na parte de busca, usar um JTextEdit em vez de um input normal e
+	 * 		 nao feixar a aba logo apos a 1* busca
+	 * 		-Fazer um tratamento para expressoes da forma: a, (a), durante o script De Simone
+	 * 		-Permitir entrar com ERs do tpw:
+	 * 			a***, a?+ ...
+	 */
+	
 	public static void main(String[] args) {
 		new Main();
 	}

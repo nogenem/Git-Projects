@@ -10,7 +10,7 @@ public abstract class CfgCtrl {
 	// Pattern usado para checar a gramatica do usuario.
 	private static final String patternCFG = 
 			"([A-Z][0-9]?->(([^&]+|&)(\\|))*([^&]+|&)\\s*)+";
-	// Pattern usado para checar simbolos não terminais.
+	// Pattern usado para checar simbolos não-terminais.
 	private static final String patternNT = 
 			"([A-Z][0-9]?)";
 	// Pattern usado para checar simbolos terminais.
@@ -38,13 +38,13 @@ public abstract class CfgCtrl {
 		boolean isToAdd = true;
 		for(String linha : grammar.split("[\r\n]+")){
 			if(linha.lastIndexOf("->") != linha.indexOf("->"))// Verifica se só tem um simbolo '->'
-				throw new GrammarException("Por favor não utilize o simbolo '->' como simbolo terminal de sua gramatica.");
+				throw new GrammarException("Por favor não utilize o símbolo '->' como símbolo terminal de sua gramatica.");
 			
 			split = linha.split("->");
 			
 			NT = split[0].trim();
 			if(!isNtSymbol(NT))
-				throw new GrammarException("Simbolo invalido encontrado: "+NT+";\r\nEsperava-se um simbolo não terminal.");
+				throw new GrammarException("Símbolo invalido encontrado: "+NT+";\r\nEsperava-se um símbolo não-terminal.");
 			
 			glc.addNTerminal(NT);
 			if(glc.getInitialSymbol() == null)
@@ -59,8 +59,8 @@ public abstract class CfgCtrl {
 					if(isTerminalSymbol(s))
 						glc.addTerminal(s);
 					else if(!isNtSymbol(s))
-						throw new GrammarException("Simbolo invalido encontrado: "+s+
-								"\r\nEsperava-se um simbolo terminal ou não terminal valido.");
+						throw new GrammarException("Símbolo invalido encontrado: "+s+
+								"\r\nEsperava-se um símbolo terminal ou não-terminal valido.");
 					
 					// Caso o simbolo NT não apareça no lado esquerdo de nenhuma produção
 					// a 'senteça' que contem ele é ignorada pelo programa.

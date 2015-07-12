@@ -141,8 +141,12 @@ public class ParsingCtrl {
 		if(!hasEpsilon){
 			c = c.replace("ELSECODE", "else\r\n"+errTemplate+"end");
 			c = c.replace("ARRAY", formatArrayString(first, true));
-		}else// Se tem epsilon, então só retorna os valores passados como parametro pra função
-			c = c.replace("ELSECODE", "else\r\nreturn y,x\r\nend");
+		}else{// Se tem epsilon, então só retorna os valores passados como parametro pra função
+			if(!c.contains("ELSECODE"))
+				c = "return y,x";
+			else
+				c = c.replace("ELSECODE", "else\r\nreturn y,x\r\nend");
+		}
 		
 		return correctIdentation(c);
 	}
@@ -186,9 +190,9 @@ public class ParsingCtrl {
 		}catch(LuaRuntimeException e){
 			msg = e.getMessage();
 			msg = msg.replaceAll("Asint:\\d+: ", "");
-			if(msg.contains("Sucesso")) //sucesso
+			if(msg.contains("Sucesso")) // Sucesso
 				errType = 1;
-			else if(msg.contains("Simbolo atual:")) //erro no input passado
+			else if(msg.contains("Simbolo atual:")) // Erro no input passado
 				errType = 2;
 			
 		}finally{

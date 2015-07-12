@@ -365,7 +365,7 @@ public class ContextFreeGrammar {
 			follow.put(NT, new HashSet<>());
 		
 		// Passo 1
-		follow.get(initialSymbol).add("Z'"); //simbolo de final de palavra
+		follow.get(initialSymbol).add("Z'"); //simbolo de final de sentença
 		
 		// Passo 2
 		ArrayList<String> sentence;

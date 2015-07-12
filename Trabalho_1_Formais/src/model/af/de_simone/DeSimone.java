@@ -14,7 +14,7 @@ public abstract class DeSimone {
 	
 	/**
 	 * Função responsavel por criar o AFD apartir de uma 
-	 * Expressão Regular dada utilizando o algoritmo De Simone.
+	 * Expressão Regular dada, utilizando o algoritmo De Simone.
 	 * 
 	 * @param regEx		Expressão regular que se quer achar o AFD.
 	 * @return			AFD equivalente a Expressão Regular dada.

@@ -129,7 +129,7 @@ public class Main {
 	 * do programa ou por um clique duplo em uma gramatica
 	 * na lista do lado esquerdo do programa.
 	 * 
-	 * @param key		'Chave' contendo o nome da gramatica ou 
+	 * @param key		'Chave' contendo o titulo da gramatica ou 
 	 * 					o elemento da ComboBox que ira ser
 	 * 					mostrada no painel. 
 	 */
@@ -143,8 +143,8 @@ public class Main {
 	}
 	
 	/**
-	 * Função usada para inicializar os valores de First, FirstNT, Follow 
-	 * e Parser do programa.
+	 * Função usada para inicializar os valores de First, FirstNT, Follow,
+	 * Parser e Verificações do programa.
 	 */
 	private void setExtras() {
 		panels.get("First").setContent(currentCFG.printSet("first"));
@@ -182,7 +182,7 @@ public class Main {
 				setExtras();
 		}
 		
-		if(!ui.setComboBoxSelectedItem(key))//caso ja esteja no panel do 'key', entao da refresh no panel
+		if(!ui.setComboBoxSelectedItem(key))// Caso ja esteja no panel do 'key', então da refresh no panel
 			ui.setRightContent(cfg==null?null:panels.get(key));
 	}
 	
@@ -198,7 +198,7 @@ public class Main {
 		if(content != null)
 			panels.get(key).setContent(content);
 		
-		if(!ui.setComboBoxSelectedItem(key))//caso ja esteja no panel do 'key', entao da refresh no panel
+		if(!ui.setComboBoxSelectedItem(key))// Caso ja esteja no panel do 'key', então da refresh no panel
 			ui.setRightContent(panels.get(key));
 	}
 	
@@ -316,21 +316,21 @@ public class Main {
 		txt.append("       -"+result.get(0)+"\n");
 		tmp = currentCFG.getRecSymbols();
 		if(tmp.size() > 0){
-			txt.append("       -Simbolos recursivos:\n");
+			txt.append("       -Símbolos recursivos:\n");
 			txt.append("          -"+tmp+"\n");
 		}
 		txt.append("    -Fatoração:\n");
 		txt.append("       -"+result.get(1)+"\n");
 		tmp = currentCFG.getNonFatSymbols();
 		if(tmp.size() > 0){
-			txt.append("       -Simbolos não fatorados:\n");
+			txt.append("       -Símbolos não fatorados:\n");
 			txt.append("          -"+tmp+"\n");
 		}
 		txt.append("    -Terceira condição:\n");
 		txt.append("       -"+result.get(2)+"\n");
 		tmp = currentCFG.getNonEmptyIntersection();
 		if(tmp.size() > 0){
-			txt.append("       -Simbolos com intersecção não vazia:\n");
+			txt.append("       -Símbolos com intersecção não vazia:\n");
 			txt.append("          -"+tmp+"\n");
 		}
 		txt.append("\nResultado:\n");
@@ -386,16 +386,16 @@ public class Main {
 		if(!currentCFG.isLL1())
 			throw new GrammarException("A gramatica não é LL(1)!");
 			
-		//check input
+		// Check input
 		if(input.matches("(.+)\\$") && !currentCFG.getVt().contains("$"))
-			throw new ParsingException("Por favor remova o simbolo $ do final da entrada.\r\n");
+			throw new ParsingException("Por favor remova o símbolo $ do final da entrada.\r\n");
 		if(input.contains("Z'"))
-			throw new ParsingException("Por favor remova o simbolo Z' da entrada.\r\n");
+			throw new ParsingException("Por favor remova o símbolo Z' da entrada.\r\n");
 		
-		input = input.replaceAll("[\t\r\n]+", " "); //Troca tabulação e quebra de linhas por espaços
-													//para garantir o funcionamento do Parsing
+		input = input.replaceAll("[\t\r\n]+", " "); // Troca tabulação e quebra de linhas por espaços
+													// para garantir o funcionamento do Parser
 		input = input.trim();
-		input += " Z'"; //Adiciona o simbolo de final de palavra a entrada
+		input += " Z'"; // Adiciona o simbolo de final de sentença a entrada
 		
 		ParsingCtrl.parsing(input, currentCFG);
 	}

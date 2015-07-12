@@ -11,6 +11,7 @@ import model.gr.RegGrammar;
 import model.gr.RegGrammarCtrl;
 
 public class RegularDao extends Dao {
+	
 	public RegularDao() {
 		super();
 	}
